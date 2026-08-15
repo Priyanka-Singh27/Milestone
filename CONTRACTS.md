@@ -182,19 +182,25 @@ QuizAttempt {
 - **On expiry:** show a clear "Your session expired — please log in again" prompt rather than a silent/unexplained redirect
 - **Local dev placeholder:** every member uses the exact string `"dev-user-1"` as `userId` before real auth is wired in. This user is seeded once into the shared dev database (see section 8) so everyone is testing against the same record.
 
----
-
 ## 7. Shared Accounts & Secrets
 
 | Item | Owner | Notes |
 |---|---|---|
-| Google Cloud project (Sign-In + Sheets API) | *Open — assign at meeting* | Must be one shared project, used by both Person D (login) and Person C (Sheets sync) |
-| Anthropic API key | *Open — assign at meeting* | Used for roadmap generation, resume parsing, and quiz generation — one shared key |
-| Object storage (S3 or Cloudinary) | Person C | Person C decides which provider |
-| MongoDB Atlas (shared dev database) | Person D | Person D sets up and shares connection string securely (not committed to Git) |
+| Google Cloud project (Sign-In + Sheets API) | Person C | Shared project used by Person D (login) and Person C (Sheets sync). |
+| LLM API key (`LLM_API_KEY`) / Provider (`LLM_PROVIDER`) | Person A | Shared credentials for the LLM service wrapper. Actual model/provider runtime-configured. |
+| Object storage (S3 or Cloudinary) | Person C | Person C decides; currently considering Cloudinary. |
+| MongoDB Atlas (shared dev database) | Person D | Person D sets up and shares connection string securely. Person D will also seed `"dev-user-1"` early in Week 1. |
 
 - Each member is individually responsible for the parts of their own feature that need a service account, unless listed above as shared.
 - No credentials are ever committed to the repo — use `.env` files locally and the hosting platform's environment variable settings in production.
+
+---
+
+### 7.1 Google Integration & Authentication (Google Sheets Sync)
+To support both Google Sign-In (Person D) and Google Sheets Sync (Person C) with minimal friction:
+- **Approach: Option B (Incremental Consent)**.
+- Users sign in with standard login profile scopes.
+- When triggering a Google Sheets sync, the frontend triggers an incremental authorization flow requesting the Google Sheets write scopes (`https://www.googleapis.com/auth/spreadsheets`) only on-demand, preventing excessive upfront scope requests.
 
 ---
 
@@ -209,11 +215,12 @@ QuizAttempt {
 ## 9. Local Development Setup
 
 - **Shared MongoDB Atlas database** — everyone connects to the same cloud dev database rather than running local copies. This keeps everyone looking at identical data, but means bad test data from one person can affect others — be careful running destructive tests against shared data.
-- **Seed data ownership:** Person D owns and runs the seed script (since they own the database setup). Each member contributes their own portion into one shared seed file before Week 3:
-  - Person A: sample roles + topics (mark `quizEligible: true` on substantial topics)
-  - Person B: fundamentals topics (DSA/OOP/OS/DBMS/CN)
-  - Person D: the single `"dev-user-1"` test user record
-  - Person C: no seed data needed (applications/certificates are created live during testing)
+- **Seed data ownership:** Person D owns and runs the seed script (since they own the database setup).
+  - **Week 1 (Immediate)**: Person D seeds the initial `"dev-user-1"` test user record to unblock development for other members.
+  - **Before Week 3**: Each member contributes their portion into one shared seed file:
+    - Person A: sample roles + topics (AI/LLM dynamically designates/scores `quizEligible` flags or specifies them in seed data)
+    - Person B: fundamentals topics (DSA/OOP/OS/DBMS/CN)
+    - Person C: no seed data needed (applications/certificates are created live during testing)
 
 ---
 
@@ -223,9 +230,11 @@ Everything currently specified in `PROJECT_TASKS.md` is in scope for the first v
 
 ---
 
-## Open Items — Decide at the Day-0 Meeting
+## Finalized Day-0 Decisions
 
-- [ ] Who creates and owns the shared Google Cloud project (Sign-In + Sheets)?
-- [ ] Who creates and owns the shared Anthropic API key?
-- [ ] Confirm object storage provider (Person C's call — S3 or Cloudinary)
-- [ ] Confirm exact `quizEligible` topics list for Phase 1 (which topics get quizzes vs. which are just tracked tasks)
+- **Google Cloud project (Sign-In + Sheets)**: Created and owned by Person C.
+- **LLM API credentials**: Created and owned by Person A.
+- **Object Storage**: Person C (considering Cloudinary).
+- **Google Sheets Auth**: Option B (incremental authorization).
+- **`quizEligible` topics**: Decided dynamically by the LLM during roadmap/fundamentals generation or pre-designated in seed data.
+- **Immediate Local User Seed**: Person D seeds `"dev-user-1"` early in Week 1.
