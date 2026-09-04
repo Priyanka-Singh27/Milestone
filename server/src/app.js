@@ -12,7 +12,7 @@ app.get('/api/v1/health', (req, res) => {
 });
 
 // Person A's routes will be registered here, e.g.:
-// app.use('/api/v1/roles', require('./routes/roles.routes'));
+app.use('/api/v1/roles', require('./routes/roles.routes'));
 // app.use('/api/v1/roadmap', require('./routes/roadmap.routes'));
 // app.use('/api/v1/skills', require('./routes/skills.routes'));
 
