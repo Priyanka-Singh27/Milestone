@@ -1,0 +1,1106 @@
+[
+  {
+    "id": "programming-fundamentals-cpp",
+    "name": "Programming Language Fundamentals (C++)",
+    "track": "Tools/Libraries",
+    "priority": "core",
+    "prerequisiteTopicIds": [],
+    "outline": [
+      {
+        "point": "Variables, primitive data types, and basic input/output (cin/cout)",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a program that reads two integers from input and prints their sum, difference, and product."
+      },
+      {
+        "point": "Operators and control flow: if/else, switch, for, while loops",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a program that prints the FizzBuzz sequence from 1 to 50 using a for loop and if/else."
+      },
+      {
+        "point": "Functions: declaration, parameters, return values, pass-by-value vs pass-by-reference",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a function that swaps two integers using pass-by-reference, and another that does the same using a pointer, then explain the difference."
+      },
+      {
+        "point": "Arrays and strings basics (declaration, traversal, common string functions)",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a program that reads a string and reverses it in place without using a built-in reverse function."
+      },
+      {
+        "point": "Pointers and dynamic memory allocation basics (new/delete)",
+        "estimatedMinutes": 35,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Write a small program that dynamically allocates an array of 10 integers with new, fills it, and frees it with delete[]; explain what happens if you forget delete[]."
+      },
+      {
+        "point": "Standard Template Library (STL) basics: vector, pair, and iterating containers",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a program that stores 5 numbers in a std::vector, sorts it, and prints the result."
+      },
+      {
+        "point": "Interview-favorite: difference between stack and heap memory, and common pitfalls (dangling pointers, memory leaks)",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain out loud the difference between stack and heap memory in C++, and describe one scenario that causes a memory leak."
+      }
+    ]
+  },
+  {
+    "id": "complexity-analysis",
+    "name": "Time & Space Complexity Analysis",
+    "track": "DSA",
+    "priority": "core",
+    "prerequisiteTopicIds": ["programming-fundamentals-cpp"],
+    "outline": [
+      {
+        "point": "What time and space complexity measure, and why they matter",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain in plain language why two programs that produce the same output can have very different running times as input size grows."
+      },
+      {
+        "point": "Big-O notation: best case, worst case, and average case",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "For a linear search function, state its best-case and worst-case time complexity and explain the scenario that produces each."
+      },
+      {
+        "point": "Common complexity classes: O(1), O(log n), O(n), O(n log n), O(n^2), O(2^n)",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Rank these five complexities from fastest to slowest growing and give one real algorithm example for each: O(1), O(log n), O(n), O(n log n), O(n^2)."
+      },
+      {
+        "point": "Analyzing time complexity of simple code (single loops, nested loops)",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Look at 3 short code snippets (single loop, nested loop, loop with a halving step) and write down the Big-O of each."
+      },
+      {
+        "point": "Space complexity analysis, including recursion stack space",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain why a recursive factorial function uses O(n) space even though it doesn't declare any arrays."
+      },
+      {
+        "point": "Interview-favorite: comparing two solutions to the same problem by time-space trade-off (e.g. brute force vs hashmap-based approach)",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "For the 'two sum' problem, compare the brute-force O(n^2) solution to the hashmap-based O(n) solution and explain the time-space trade-off out loud."
+      }
+    ]
+  },
+  {
+    "id": "oop-concepts",
+    "name": "Object-Oriented Programming (OOP)",
+    "track": "Core CS",
+    "priority": "core",
+    "prerequisiteTopicIds": ["programming-fundamentals-cpp"],
+    "outline": [
+      {
+        "point": "Classes and objects: defining a class, creating objects, member variables and methods",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Define a 'Book' class with title, author, and price attributes, and a method that prints the book's details, then create two Book objects."
+      },
+      {
+        "point": "Constructors and destructors",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Add a parameterized constructor to your Book class and a destructor that prints a message when a Book object is destroyed."
+      },
+      {
+        "point": "Encapsulation: access modifiers (public/private/protected), getters and setters",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Make the Book class's attributes private and add getter/setter methods, then explain why direct access was restricted."
+      },
+      {
+        "point": "Inheritance: base and derived classes, code reuse through 'is-a' relationships",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Create a base class 'Animal' with a method makeSound(), and derived classes 'Dog' and 'Cat' that override it, then instantiate and call each."
+      },
+      {
+        "point": "Polymorphism: compile-time (function/operator overloading) vs runtime (function overriding via virtual functions)",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write one example of function overloading (same function name, different parameters) and one example of runtime polymorphism using a base class pointer calling an overridden virtual function."
+      },
+      {
+        "point": "Abstraction: abstract classes and interfaces",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain the difference between abstraction and encapsulation using your Animal class example, and identify which part of your code demonstrates abstraction."
+      },
+      {
+        "point": "Interview-favorite: encapsulation vs abstraction, and overloading vs overriding — the two comparisons interviewers ask most",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain out loud, with one example each, the difference between encapsulation and abstraction, and the difference between function overloading and overriding."
+      },
+      {
+        "point": "Composition over inheritance, and a first look at SOLID principles",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Describe a scenario where you would prefer composition ('has-a') over inheritance ('is-a'), and name one SOLID principle you could apply to improve it."
+      }
+    ]
+  },
+  {
+    "id": "arrays-strings",
+    "name": "Arrays & Strings",
+    "track": "DSA",
+    "priority": "core",
+    "prerequisiteTopicIds": ["programming-fundamentals-cpp", "complexity-analysis"],
+    "outline": [
+      {
+        "point": "Array representation, traversal, and time complexity of access/insert/delete",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain why array access is O(1) but inserting an element in the middle of an array is O(n)."
+      },
+      {
+        "point": "Two-pointer technique on arrays (opposite ends and same-direction pointers)",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Write a two-pointer solution to check if a sorted array has two numbers that sum to a target value."
+      },
+      {
+        "point": "Sliding window technique for subarray/substring problems",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Write a sliding-window solution that finds the maximum sum of any contiguous subarray of size k."
+      },
+      {
+        "point": "Prefix sums for range-sum queries",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Build a prefix-sum array for a given array and use it to answer 3 range-sum queries in O(1) each."
+      },
+      {
+        "point": "String traversal, common string operations (reverse, palindrome check, substring)",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a function that checks whether a given string is a palindrome, ignoring case and spaces."
+      },
+      {
+        "point": "In-place array manipulation (reversing, rotating an array without extra space)",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Write a function that rotates an array to the right by k steps in-place, without using extra array space."
+      },
+      {
+        "point": "Multi-dimensional arrays (2D array traversal, matrix basics)",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a function that transposes a square matrix in place."
+      }
+    ]
+  },
+  {
+    "id": "recursion-backtracking",
+    "name": "Recursion & Backtracking",
+    "track": "DSA",
+    "priority": "core",
+    "prerequisiteTopicIds": ["arrays-strings"],
+    "outline": [
+      {
+        "point": "What recursion is: base case, recursive case, and the call stack",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Trace, step by step on paper, the call stack for computing factorial(4) recursively."
+      },
+      {
+        "point": "Writing basic recursive functions (factorial, Fibonacci, sum of digits)",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write recursive functions for factorial and Fibonacci, then identify which calls are repeated in the Fibonacci case."
+      },
+      {
+        "point": "Recursion on arrays and strings (reverse a string recursively, check palindrome recursively)",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a recursive function that reverses a string and another that checks if a string is a palindrome."
+      },
+      {
+        "point": "Backtracking basics: explore, check constraint, backtrack pattern",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain the 'choose, explore, un-choose' backtracking pattern out loud using the subsets-generation problem as an example."
+      },
+      {
+        "point": "Classic backtracking problems: generating subsets and permutations",
+        "estimatedMinutes": 40,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Write a backtracking function that generates all subsets of a given array, and another that generates all permutations of a string."
+      },
+      {
+        "point": "Backtracking with constraints (N-Queens or Sudoku-style problems) at a conceptual level",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain how the N-Queens problem uses backtracking to prune invalid placements early, without necessarily coding the full solution."
+      },
+      {
+        "point": "Interview-favorite: recursion vs iteration trade-offs and stack overflow risk",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain when you would prefer an iterative solution over a recursive one, referencing stack overflow risk on deep recursion."
+      }
+    ]
+  },
+  {
+    "id": "sorting-searching",
+    "name": "Sorting & Searching Algorithms",
+    "track": "DSA",
+    "priority": "core",
+    "prerequisiteTopicIds": ["arrays-strings", "complexity-analysis"],
+    "outline": [
+      {
+        "point": "Linear search and binary search (iterative and recursive)",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Implement binary search both iteratively and recursively on a sorted array, and verify both give the same result."
+      },
+      {
+        "point": "Basic O(n^2) sorts: bubble sort, selection sort, insertion sort",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Implement bubble sort and insertion sort on a small array by hand-tracing 2 passes each before coding them."
+      },
+      {
+        "point": "Efficient O(n log n) sorts: merge sort and quicksort",
+        "estimatedMinutes": 45,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Implement merge sort, and trace through the partition step of quicksort on a 6-element array by hand."
+      },
+      {
+        "point": "Comparing sorting algorithms: stability, in-place vs extra space, best/worst case",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain what a 'stable' sort means, and state which of bubble sort, merge sort, and quicksort are stable."
+      },
+      {
+        "point": "Binary search on the answer / applying binary search to non-obvious problems",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Use binary search to find the first occurrence of a target value in a sorted array with duplicates."
+      },
+      {
+        "point": "Interview-favorite: when to choose quicksort vs merge sort in practice, and built-in sort function complexity",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain why quicksort's worst case is O(n^2) but it's still often used in practice over merge sort."
+      }
+    ]
+  },
+  {
+    "id": "linked-lists",
+    "name": "Linked Lists",
+    "track": "DSA",
+    "priority": "core",
+    "prerequisiteTopicIds": ["arrays-strings"],
+    "outline": [
+      {
+        "point": "Singly linked list structure: node, head, traversal",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Implement a singly linked list class with insert-at-head and print/traverse methods."
+      },
+      {
+        "point": "Insertion and deletion at head, tail, and a given position",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Add insert-at-tail and delete-at-position methods to your linked list class and test each with a 5-node list."
+      },
+      {
+        "point": "Reversing a linked list (iterative and recursive)",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Write both an iterative and a recursive function to reverse a singly linked list."
+      },
+      {
+        "point": "Fast and slow pointer technique: detecting a cycle, finding the middle node",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Implement Floyd's cycle detection (fast/slow pointer) to detect if a linked list has a cycle."
+      },
+      {
+        "point": "Doubly linked lists and circular linked lists (conceptual differences from singly linked lists)",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain the trade-off of a doubly linked list (extra pointer per node) versus a singly linked list, and one use case for a circular linked list."
+      },
+      {
+        "point": "Interview-favorite: merging two sorted linked lists, and array vs linked list trade-offs",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Write a function that merges two sorted linked lists into one sorted linked list, then explain when you'd choose a linked list over an array."
+      }
+    ]
+  },
+  {
+    "id": "stacks-queues",
+    "name": "Stacks & Queues",
+    "track": "DSA",
+    "priority": "core",
+    "prerequisiteTopicIds": ["arrays-strings", "linked-lists"],
+    "outline": [
+      {
+        "point": "Stack (LIFO): push, pop, peek, and implementing a stack using an array or linked list",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Implement a stack using an array with push, pop, and peek operations, and test it with a sequence of operations."
+      },
+      {
+        "point": "Queue (FIFO): enqueue, dequeue, and circular queue basics",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Implement a queue using an array (or two stacks) with enqueue and dequeue operations."
+      },
+      {
+        "point": "Classic stack application: valid parentheses / balanced brackets checking",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Write a function using a stack that checks whether a string of brackets like '{[()]}' is balanced."
+      },
+      {
+        "point": "Classic stack application: evaluating postfix expressions or implementing undo functionality (conceptual)",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain how a stack could be used to implement the 'undo' feature of a text editor."
+      },
+      {
+        "point": "Priority queues and heaps: min-heap/max-heap concept and use cases",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain what a min-heap guarantees about its root element, and describe one real use case (e.g. finding the k smallest elements)."
+      },
+      {
+        "point": "Interview-favorite: stack vs queue vs deque comparison, and implementing a queue using two stacks",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Implement a queue using two stacks and explain the amortized time complexity of the dequeue operation."
+      }
+    ]
+  },
+  {
+    "id": "hashing",
+    "name": "Hashing (Hash Tables/Maps & Sets)",
+    "track": "DSA",
+    "priority": "core",
+    "prerequisiteTopicIds": ["arrays-strings"],
+    "outline": [
+      {
+        "point": "What a hash function and hash table are, and why average-case lookup is O(1)",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain, in plain language, how a hash function maps a key to an array index, and why two different keys can end up at the same index."
+      },
+      {
+        "point": "Collision handling: chaining vs open addressing (conceptual overview)",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain the difference between chaining and open addressing as two ways to resolve hash collisions."
+      },
+      {
+        "point": "Using hash maps/sets in practice (insert, lookup, delete, iterate)",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a function that uses a hash set to check whether an array contains any duplicate values."
+      },
+      {
+        "point": "Frequency counting pattern using a hash map (a very common interview pattern)",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Write a function that finds the first non-repeating character in a string using a hash map of character frequencies."
+      },
+      {
+        "point": "The 'two sum' pattern: solving array-pair problems in O(n) using a hash map instead of O(n^2) brute force",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Solve the 'two sum' problem (find two numbers that add up to a target) in O(n) time using a hash map."
+      },
+      {
+        "point": "Interview-favorite: hash table vs balanced BST for lookups, and worst-case degradation of hash tables",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain why hash table lookups are usually O(1) but can degrade to O(n) in the worst case, and when a balanced BST might be preferred instead."
+      }
+    ]
+  },
+  {
+    "id": "trees-bst",
+    "name": "Trees & Binary Search Trees",
+    "track": "DSA",
+    "priority": "core",
+    "prerequisiteTopicIds": ["recursion-backtracking", "linked-lists"],
+    "outline": [
+      {
+        "point": "Tree terminology: root, node, leaf, height, depth; binary tree structure",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Draw a binary tree with 7 nodes and label its root, leaves, height, and the depth of two specific nodes."
+      },
+      {
+        "point": "Tree traversals: in-order, pre-order, post-order (recursive), and level-order (using a queue)",
+        "estimatedMinutes": 40,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Implement in-order, pre-order, post-order, and level-order traversal on a small binary tree and verify the outputs by hand."
+      },
+      {
+        "point": "Binary Search Tree (BST) properties and operations: insert, search, delete",
+        "estimatedMinutes": 40,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Implement insert and search for a BST, then insert the sequence 50, 30, 70, 20, 40 and draw the resulting tree."
+      },
+      {
+        "point": "Why in-order traversal of a BST gives sorted order, and how to validate a BST",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain why in-order traversal of a valid BST always produces values in sorted order, then write a function to check if a binary tree is a valid BST."
+      },
+      {
+        "point": "Height/balance concepts: balanced vs skewed trees, and why balance matters for performance (AVL trees at a conceptual level)",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain why a completely skewed BST behaves like a linked list, degrading search from O(log n) to O(n)."
+      },
+      {
+        "point": "Common tree interview problems: height of a tree, lowest common ancestor (LCA), diameter of a tree",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Write a recursive function to find the height of a binary tree, then a function to find the lowest common ancestor of two given nodes."
+      },
+      {
+        "point": "Heaps as a specialized tree: min-heap/max-heap operations (insert, extract-min/max) and heap sort at a conceptual level",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain how a min-heap maintains its 'parent smaller than children' property after an insert, using the sift-up operation."
+      }
+    ]
+  },
+  {
+    "id": "graphs",
+    "name": "Graphs",
+    "track": "DSA",
+    "priority": "core",
+    "prerequisiteTopicIds": ["trees-bst", "stacks-queues"],
+    "outline": [
+      {
+        "point": "Graph terminology and representations: adjacency list vs adjacency matrix",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Represent the same small graph (5 nodes, 6 edges) as both an adjacency list and an adjacency matrix, and note the space trade-off."
+      },
+      {
+        "point": "Breadth-First Search (BFS) using a queue",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Implement BFS on a graph represented as an adjacency list and print the visiting order starting from a given node."
+      },
+      {
+        "point": "Depth-First Search (DFS), recursive and iterative (using a stack)",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Implement DFS both recursively and iteratively (with an explicit stack) on the same graph and compare the visiting order to BFS."
+      },
+      {
+        "point": "Detecting cycles in a graph (directed and undirected, conceptually)",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain how DFS can be used to detect a cycle in a directed graph using the concept of a 'recursion stack' / visiting states."
+      },
+      {
+        "point": "Shortest path algorithms: BFS for unweighted graphs, Dijkstra's algorithm for weighted graphs (conceptual)",
+        "estimatedMinutes": 35,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain why BFS alone finds the shortest path in an unweighted graph but not in a weighted graph, and why Dijkstra's algorithm is needed instead."
+      },
+      {
+        "point": "Topological sort and its use case (task scheduling with dependencies)",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Implement a topological sort (using DFS or Kahn's algorithm) on a small directed acyclic graph representing task dependencies."
+      },
+      {
+        "point": "Minimum Spanning Tree basics: Prim's and Kruskal's algorithms (conceptual)",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain, at a high level, the difference in approach between Prim's algorithm (grows from a node) and Kruskal's algorithm (sorts edges) for building a minimum spanning tree."
+      }
+    ]
+  },
+  {
+    "id": "dynamic-programming",
+    "name": "Dynamic Programming & Greedy Algorithms",
+    "track": "DSA",
+    "priority": "core",
+    "prerequisiteTopicIds": ["recursion-backtracking", "arrays-strings"],
+    "outline": [
+      {
+        "point": "What makes a problem suitable for DP: overlapping subproblems and optimal substructure",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain, using the Fibonacci sequence, what 'overlapping subproblems' means and why naive recursion recomputes the same values."
+      },
+      {
+        "point": "Memoization (top-down DP): converting a recursive solution to use a cache",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Take your recursive Fibonacci function and add memoization using an array or hash map, then compare its speed to the un-memoized version for n=35."
+      },
+      {
+        "point": "Tabulation (bottom-up DP): building the solution iteratively from base cases",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Rewrite the memoized Fibonacci solution as a bottom-up tabulation solution using a simple array."
+      },
+      {
+        "point": "Classic 1D DP problems: climbing stairs, house robber, coin change",
+        "estimatedMinutes": 40,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Solve the 'climbing stairs' problem (count ways to reach the top taking 1 or 2 steps) using tabulation."
+      },
+      {
+        "point": "Classic 2D DP problems: 0/1 Knapsack, Longest Common Subsequence",
+        "estimatedMinutes": 45,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Solve the 0/1 Knapsack problem using a 2D DP table for a small example with 4 items and a given capacity."
+      },
+      {
+        "point": "Greedy algorithms: what makes a problem greedy-solvable, and how it differs from DP",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain the difference between a greedy approach and a DP approach, using the coin change problem as an example of where greedy can fail."
+      },
+      {
+        "point": "Classic greedy problems: activity selection, fractional knapsack",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Solve the activity selection problem (choosing the maximum number of non-overlapping intervals) using a greedy, sort-by-end-time approach."
+      }
+    ]
+  },
+  {
+    "id": "dbms-fundamentals",
+    "name": "DBMS & Database Concepts",
+    "track": "Core CS",
+    "priority": "core",
+    "prerequisiteTopicIds": [],
+    "outline": [
+      {
+        "point": "Relational model basics: tables, rows, columns, and schemas",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain, with an example table, what a schema, a row, and a column represent in a relational database."
+      },
+      {
+        "point": "Keys: primary key, foreign key, candidate key, composite key",
+        "estimatedMinutes": 35,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Sketch two related tables (e.g. Orders and Customers) and label the primary key and foreign key that connects them."
+      },
+      {
+        "point": "Normalization: 1NF, 2NF, 3NF and why redundancy is removed",
+        "estimatedMinutes": 45,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Take an unnormalized sample table with repeating groups and manually normalize it to 3NF, explaining each step."
+      },
+      {
+        "point": "SQL basics: SELECT, WHERE, JOIN, GROUP BY (enough to query a database)",
+        "estimatedMinutes": 40,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a query joining two tables (e.g. Orders and Customers) and grouping results to compute total order value per customer."
+      },
+      {
+        "point": "Transactions and ACID properties (Atomicity, Consistency, Isolation, Durability)",
+        "estimatedMinutes": 35,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain each ACID property out loud using a bank fund-transfer example."
+      },
+      {
+        "point": "Transaction isolation levels and the read phenomena they prevent: dirty reads, non-repeatable reads, phantom reads",
+        "estimatedMinutes": 35,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain the difference between dirty reads, non-repeatable reads, and phantom reads out loud, with one example of each, and state which isolation level prevents which."
+      },
+      {
+        "point": "Indexes and why they speed up queries (conceptual, no need for B-tree internals yet)",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain to a peer why a query filtering on an indexed column is faster than one filtering on a non-indexed column."
+      }
+    ]
+  },
+  {
+    "id": "operating-systems-fundamentals",
+    "name": "Operating Systems Fundamentals",
+    "track": "Core CS",
+    "priority": "core",
+    "prerequisiteTopicIds": ["programming-fundamentals-cpp"],
+    "outline": [
+      {
+        "point": "What an OS does: process management, memory management, file systems, I/O (overview)",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain in your own words the four main responsibilities of an operating system."
+      },
+      {
+        "point": "Processes vs threads: definitions, memory sharing, and why threads are lighter-weight",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain the difference between a process and a thread, and give one reason multithreading improves performance over multiprocessing for some tasks."
+      },
+      {
+        "point": "Process states and context switching",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Draw the process state diagram (new, ready, running, waiting, terminated) and explain what triggers a transition from running to waiting."
+      },
+      {
+        "point": "CPU scheduling algorithms: FCFS, SJF, Round Robin, Priority scheduling",
+        "estimatedMinutes": 40,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Given a set of 4 processes with arrival and burst times, compute the average waiting time under FCFS and under Round Robin (with a given time quantum), and compare the results."
+      },
+      {
+        "point": "Process synchronization: race conditions, critical sections, mutexes, and semaphores",
+        "estimatedMinutes": 35,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain what a race condition is using a shared-bank-balance example, and describe how a mutex would prevent it."
+      },
+      {
+        "point": "Deadlocks: the four necessary conditions, and prevention/avoidance at a conceptual level",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "List the four necessary conditions for a deadlock and explain how breaking just one of them prevents deadlock."
+      },
+      {
+        "point": "Memory management: paging, segmentation, and virtual memory basics",
+        "estimatedMinutes": 35,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain why virtual memory lets a program use more memory than is physically available, using the concept of paging."
+      },
+      {
+        "point": "Interview-favorite: thrashing, and the difference between paging and segmentation",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain what thrashing is and why it hurts system performance, then explain the difference between paging and segmentation."
+      }
+    ]
+  },
+  {
+    "id": "computer-networks-fundamentals",
+    "name": "Computer Networks Fundamentals",
+    "track": "Core CS",
+    "priority": "core",
+    "prerequisiteTopicIds": [],
+    "outline": [
+      {
+        "point": "The OSI model: seven layers and what each one does",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "List the 7 OSI layers from bottom to top and give one protocol or concept that lives at each layer."
+      },
+      {
+        "point": "The TCP/IP model and how it maps (loosely) to the OSI model",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain why the TCP/IP model uses 4 layers instead of the OSI model's 7, and which OSI layers get merged."
+      },
+      {
+        "point": "IP addressing basics: IPv4 vs IPv6, and what a subnet is (high level)",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain the difference between IPv4 and IPv6 addressing, and why IPv6 was introduced."
+      },
+      {
+        "point": "TCP vs UDP: connection-oriented vs connectionless, reliability trade-offs",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain the difference between TCP and UDP and give one real application that would use each (e.g. file transfer vs video streaming)."
+      },
+      {
+        "point": "The TCP three-way handshake",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Draw and explain the three steps (SYN, SYN-ACK, ACK) of the TCP three-way handshake."
+      },
+      {
+        "point": "DNS: how a domain name gets resolved to an IP address",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain, step by step, what happens between typing a URL in a browser and the browser receiving the corresponding IP address."
+      },
+      {
+        "point": "HTTP vs HTTPS, and a basic understanding of what happens when you 'type a URL and hit enter'",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Practice explaining out loud, end to end, everything that happens from typing a URL to a webpage rendering in the browser."
+      }
+    ]
+  },
+  {
+    "id": "system-design-basics",
+    "name": "System Design Basics (for Freshers)",
+    "track": "Core CS",
+    "priority": "supplementary",
+    "prerequisiteTopicIds": ["oop-concepts", "dbms-fundamentals", "operating-systems-fundamentals"],
+    "outline": [
+      {
+        "point": "Why system design is asked even for freshers: thinking about scale and trade-offs, not just correctness",
+        "estimatedMinutes": 15,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain, in your own words, why an interviewer might ask a fresher to design something like a URL shortener instead of only asking DSA questions."
+      },
+      {
+        "point": "Low-Level Design (LLD) basics: classes, relationships, and applying SOLID principles to a small system",
+        "estimatedMinutes": 35,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Sketch the classes and relationships you would use to design a simple 'Parking Lot' system (e.g. ParkingLot, Slot, Vehicle classes)."
+      },
+      {
+        "point": "Common design patterns at an introductory level: Singleton, Factory, Observer",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain in your own words when you'd use a Singleton pattern versus a Factory pattern, with one example each."
+      },
+      {
+        "point": "Basic High-Level Design (HLD) vocabulary: load balancer, cache, database replication (conceptual only)",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain, at a high level, what a load balancer does and why a system with a single server can become a bottleneck."
+      },
+      {
+        "point": "Solving a simple LLD problem end-to-end (e.g. designing a Splitwise-like expense splitter or a vending machine)",
+        "estimatedMinutes": 40,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Design the classes and core methods for a simple vending machine (states: idle, has-money, dispensing) on paper."
+      },
+      {
+        "point": "Interview-favorite: how to structure a system design answer (clarify requirements, outline a simple design, discuss one trade-off) even for a fresher-level question",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Practice a 5-minute mock answer to 'design a URL shortener' following the structure: clarify requirements → propose a simple design → mention one scaling trade-off."
+      }
+    ]
+  },
+  {
+    "id": "sql-basics",
+    "name": "SQL Basics for Developers",
+    "track": "Tools/Libraries",
+    "priority": "core",
+    "prerequisiteTopicIds": ["dbms-fundamentals"],
+    "outline": [
+      {
+        "point": "SELECT, FROM, WHERE — retrieving and filtering rows",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write 3 SELECT queries against a sample 'employees' table filtering by different conditions (equality, range, text match)."
+      },
+      {
+        "point": "Aggregate functions and GROUP BY/HAVING",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a query that groups orders by customer and returns only customers whose total spend exceeds 10,000."
+      },
+      {
+        "point": "JOINs: INNER, LEFT, RIGHT, FULL — combining rows from multiple tables",
+        "estimatedMinutes": 40,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Given Orders and Customers tables, write an INNER JOIN and a LEFT JOIN query and explain the difference in the row counts returned."
+      },
+      {
+        "point": "Subqueries and Common Table Expressions (CTEs)",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Rewrite a nested subquery as a CTE using the WITH clause and explain why the CTE version is easier to read."
+      },
+      {
+        "point": "INSERT, UPDATE, DELETE and the difference between DELETE, TRUNCATE, and DROP",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain the difference between DELETE, TRUNCATE, and DROP, including which ones can be rolled back inside a transaction."
+      },
+      {
+        "point": "Interview-favorite: writing a query for a 'find the Nth highest salary' style problem",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Write a SQL query that finds the second-highest salary from an employees table without using a hardcoded LIMIT/OFFSET of exactly 1."
+      }
+    ]
+  },
+  {
+    "id": "git-version-control",
+    "name": "Git & Version Control",
+    "track": "Tools/Libraries",
+    "priority": "supplementary",
+    "prerequisiteTopicIds": [],
+    "outline": [
+      {
+        "point": "What version control is and why it matters for collaborative development",
+        "estimatedMinutes": 15,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain, in your own words, one problem that would occur if a 3-person team edited the same codebase without version control."
+      },
+      {
+        "point": "Basic Git workflow: init, add, commit, status, log",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Initialize a Git repository, create a file, and make 3 separate commits, then view the history with git log."
+      },
+      {
+        "point": "Branching: creating, switching, and merging branches",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Create a new branch, make a change and commit it, then merge that branch back into main."
+      },
+      {
+        "point": "Remote repositories: clone, push, pull, and working with GitHub/GitLab",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Clone a public GitHub repository, make a small local change, commit it, and push it to a fork you own."
+      },
+      {
+        "point": "Resolving merge conflicts",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Deliberately create a merge conflict by editing the same line on two branches, then resolve it manually."
+      },
+      {
+        "point": "Interview-favorite: git merge vs git rebase — what each does and when to use which",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain the difference between git merge and git rebase, and describe a scenario where you would use rebase over merge."
+      }
+    ]
+  },
+  {
+    "id": "rest-apis-web-basics",
+    "name": "Web Basics & REST APIs",
+    "track": "Tools/Libraries",
+    "priority": "supplementary",
+    "prerequisiteTopicIds": ["programming-fundamentals-cpp"],
+    "outline": [
+      {
+        "point": "How the client-server model works, and what a request/response cycle looks like",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain, in your own words, the client-server model using a web browser and a website as the example."
+      },
+      {
+        "point": "HTTP methods (GET, POST, PUT, DELETE, PATCH) and status codes (2xx, 4xx, 5xx)",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Match each HTTP method to a CRUD operation (Create/Read/Update/Delete), and explain the difference between a 404 and a 500 status code."
+      },
+      {
+        "point": "REST API principles: resources, statelessness, and using URLs meaningfully",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Design REST-style URL endpoints (with HTTP methods) for a simple 'books' resource supporting create, read, update, and delete."
+      },
+      {
+        "point": "JSON as a data format for APIs",
+        "estimatedMinutes": 15,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a JSON object representing a 'book' with title, author, and price fields, and validate it's syntactically correct."
+      },
+      {
+        "point": "Making a basic API request and reading a response (using curl or a simple script)",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Use curl (or a Python/JS script) to make a GET request to a public test API (e.g. a placeholder API) and print the JSON response."
+      },
+      {
+        "point": "Interview-favorite: PUT vs PATCH, and what 'statelessness' means in REST",
+        "estimatedMinutes": 15,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain the difference between PUT and PATCH, and explain what it means for a REST API to be 'stateless'."
+      }
+    ]
+  },
+  {
+    "id": "quant-logical-aptitude",
+    "name": "Quantitative Aptitude & Logical Reasoning",
+    "track": "Aptitude",
+    "priority": "supplementary",
+    "prerequisiteTopicIds": [],
+    "outline": [
+      {
+        "point": "Number systems, percentages, and ratio/proportion basics",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Solve 5 mixed percentage and ratio word problems within 10 minutes, timing yourself."
+      },
+      {
+        "point": "Profit, loss, discount, and simple/compound interest problems",
+        "estimatedMinutes": 35,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Solve 5 profit-and-loss and interest word problems, then re-derive each formula from first principles instead of memorizing it."
+      },
+      {
+        "point": "Time, speed, distance and time & work problems",
+        "estimatedMinutes": 35,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Solve 5 time-speed-distance problems and 5 time-and-work problems under a strict 15-minute timer."
+      },
+      {
+        "point": "Permutations, combinations, and basic probability",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Solve 3 permutation/combination problems and 3 basic probability problems."
+      },
+      {
+        "point": "Logical reasoning: number/letter series, coding-decoding, blood relations, seating arrangements",
+        "estimatedMinutes": 35,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Solve 3 number-series puzzles, 2 coding-decoding puzzles, and one seating-arrangement puzzle, checking answers against explanations afterward."
+      },
+      {
+        "point": "Timed mock-test strategy for section-locked tests (TCS/Infosys/Wipro/AMCAT-style written rounds)",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Take one 20-minute mock aptitude section and afterward write down which question types you should skip-and-return-to next time to save time."
+      }
+    ]
+  }
+]

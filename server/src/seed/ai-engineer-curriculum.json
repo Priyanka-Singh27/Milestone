@@ -1,0 +1,906 @@
+[
+  {
+    "id": "python-fundamentals",
+    "name": "Python Programming Fundamentals",
+    "track": "Tools/Libraries",
+    "priority": "core",
+    "prerequisiteTopicIds": [],
+    "outline": [
+      {
+        "point": "Variables, basic data types, and control flow (if/else, loops)",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a script that loops through a list of numbers and prints whether each is even or odd."
+      },
+      {
+        "point": "Core data structures: lists, dictionaries, tuples, sets",
+        "estimatedMinutes": 40,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Create a dictionary mapping 5 product names to prices, then write code that finds the most expensive product."
+      },
+      {
+        "point": "Functions, default/keyword arguments, and basic error handling (try/except)",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a function that divides two numbers and uses try/except to handle division by zero gracefully."
+      },
+      {
+        "point": "Object-oriented basics: classes, objects, and type annotations",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a small class 'Message' with typed attributes (role: str, content: str) and a method that prints a formatted version."
+      },
+      {
+        "point": "Working with JSON: parsing and constructing JSON payloads",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a script that loads a JSON string into a Python dict, modifies one field, and dumps it back to a JSON string."
+      },
+      {
+        "point": "Asynchronous execution basics: async/await for non-blocking API calls",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write an async function that simulates two independent 'API calls' (using asyncio.sleep) and runs them concurrently with asyncio.gather."
+      },
+      {
+        "point": "Interview-favorite: mutable vs immutable types, and list/dict comprehensions",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain why a list is mutable but a tuple is not, then rewrite a for-loop that filters even numbers as a one-line list comprehension."
+      }
+    ]
+  },
+  {
+    "id": "python-dsa-basics",
+    "name": "Basic DSA for AI Engineering Interviews",
+    "track": "DSA",
+    "priority": "supplementary",
+    "prerequisiteTopicIds": ["python-fundamentals"],
+    "outline": [
+      {
+        "point": "Time/space complexity intuition (Big-O) without deep formal analysis",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain, in plain language, why searching a Python list is O(n) but looking up a value in a dictionary is close to O(1)."
+      },
+      {
+        "point": "Array and string manipulation basics (traversal, slicing, reversing)",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a function that reverses a string and another that finds the most frequent word in a list of strings."
+      },
+      {
+        "point": "Using dictionaries/hash maps for frequency counting (a very common pattern)",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Write a function that counts the frequency of each token in a list of strings using a dictionary."
+      },
+      {
+        "point": "Basic recursion (factorial, simple tree/graph traversal concepts as used in agent/graph frameworks)",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain, in your own words, why understanding basic recursion helps when reading a LangGraph-style agent workflow that loops and branches."
+      },
+      {
+        "point": "Interview-favorite: 'two sum' style array problems and why they show up even in AI-focused interviews",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Solve the 'two sum' problem (find two numbers in a list that add to a target) using a dictionary in O(n) time."
+      }
+    ]
+  },
+  {
+    "id": "sql-basics",
+    "name": "SQL Basics for AI Engineers",
+    "track": "Tools/Libraries",
+    "priority": "core",
+    "prerequisiteTopicIds": [],
+    "outline": [
+      {
+        "point": "SELECT, WHERE, and filtering rows",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write 3 SELECT queries against a sample 'documents' table filtering by different conditions."
+      },
+      {
+        "point": "JOINs and aggregate functions (COUNT, SUM, GROUP BY)",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a query that joins a 'users' table with a 'queries' table and counts how many queries each user made."
+      },
+      {
+        "point": "INSERT/UPDATE/DELETE and basic schema design for logging AI interactions",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Design a simple table schema for logging LLM prompts and responses (columns: id, prompt, response, tokens_used, timestamp), then write an INSERT statement for one row."
+      },
+      {
+        "point": "Working with a Postgres extension for vectors (pgvector) at a conceptual level",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain, in your own words, what pgvector adds to a normal PostgreSQL database and why an AI engineer might choose it over a dedicated vector database."
+      },
+      {
+        "point": "Interview-favorite: writing a query to retrieve the most recent N records per user (a common pattern for chat history)",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Write a SQL query using window functions to retrieve the 5 most recent chat messages for each user in a messages table."
+      }
+    ]
+  },
+  {
+    "id": "git-version-control",
+    "name": "Git & Version Control",
+    "track": "Tools/Libraries",
+    "priority": "supplementary",
+    "prerequisiteTopicIds": [],
+    "outline": [
+      {
+        "point": "Basic Git workflow: init, add, commit, status, log",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Initialize a Git repository for a small Python script, and make 3 separate commits as you build it out."
+      },
+      {
+        "point": "Branching and merging",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Create a branch for an experimental prompt-tuning change, commit it, and merge it back into main."
+      },
+      {
+        "point": "Working with remotes: clone, push, pull, and pull requests",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Clone a public GitHub repository containing a sample LangChain project, make a small change, and push it to your own fork."
+      },
+      {
+        "point": "Interview-favorite: git merge vs git rebase",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain the difference between git merge and git rebase, and when you'd prefer rebase for a feature branch."
+      }
+    ]
+  },
+  {
+    "id": "rest-apis-fastapi",
+    "name": "REST APIs & FastAPI",
+    "track": "Tools/Libraries",
+    "priority": "core",
+    "prerequisiteTopicIds": ["python-fundamentals"],
+    "outline": [
+      {
+        "point": "HTTP basics: methods (GET/POST), status codes, and JSON request/response bodies",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain the difference between a GET and a POST request, and describe when you'd use each for an AI service endpoint."
+      },
+      {
+        "point": "Building a basic FastAPI app: routes, path parameters, and request bodies",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Build a FastAPI endpoint POST /summarize that accepts a JSON body with a 'text' field and returns a mock summary string."
+      },
+      {
+        "point": "Request validation using Pydantic models",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Define a Pydantic model for a chat request (with fields like message: str and max_tokens: int) and use it as your FastAPI endpoint's input type."
+      },
+      {
+        "point": "Async endpoints in FastAPI for calling external LLM APIs without blocking",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write an async FastAPI endpoint that calls a mock external API using httpx and returns the result."
+      },
+      {
+        "point": "Streaming responses (for token-by-token LLM output)",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Build a FastAPI endpoint that uses StreamingResponse to send back a sequence of words with a small delay between each, simulating token streaming."
+      },
+      {
+        "point": "Interview-favorite: structured/forced JSON outputs from an LLM using Pydantic models",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain why forcing an LLM to return a strict JSON structure (matching a Pydantic model) is more reliable for downstream code than parsing free-form text."
+      }
+    ]
+  },
+  {
+    "id": "ml-fundamentals",
+    "name": "Machine Learning Fundamentals",
+    "track": "Core CS",
+    "priority": "core",
+    "prerequisiteTopicIds": ["python-fundamentals"],
+    "outline": [
+      {
+        "point": "What machine learning is: supervised, unsupervised, and reinforcement learning at a conceptual level",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain the difference between supervised and unsupervised learning using one example of each."
+      },
+      {
+        "point": "Train/test split and why we don't evaluate a model on its training data",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain why evaluating a model only on its training data gives a misleadingly optimistic sense of performance."
+      },
+      {
+        "point": "Basic classification and regression concepts using scikit-learn (fit/predict workflow)",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Train a simple scikit-learn classifier (e.g. logistic regression) on a small sample dataset and print its accuracy on a held-out test set."
+      },
+      {
+        "point": "Evaluation metrics: accuracy, precision, recall, F1-score, and confusion matrix",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Given a confusion matrix, manually calculate precision, recall, and F1-score, and explain when you'd prioritize recall over precision."
+      },
+      {
+        "point": "Overfitting vs underfitting, and the bias-variance tradeoff",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain the bias-variance tradeoff out loud, giving one example of a high-bias model and one example of a high-variance model."
+      },
+      {
+        "point": "Regularization (L1/L2) and cross-validation as ways to control overfitting",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain the difference between L1 and L2 regularization and describe what k-fold cross-validation does."
+      },
+      {
+        "point": "Interview-favorite: bagging vs boosting, and why ensemble methods often outperform single models",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain the difference between bagging (e.g. Random Forest) and boosting (e.g. gradient boosting) in your own words."
+      }
+    ]
+  },
+  {
+    "id": "dl-nlp-transformer-fundamentals",
+    "name": "Deep Learning, NLP & Transformer Fundamentals",
+    "track": "Core CS",
+    "priority": "core",
+    "prerequisiteTopicIds": ["ml-fundamentals"],
+    "outline": [
+      {
+        "point": "Neural network basics: neurons, layers, activation functions, and forward pass (conceptual)",
+        "estimatedMinutes": 35,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain, in your own words, what a neural network layer computes and why non-linear activation functions are necessary."
+      },
+      {
+        "point": "NLP preprocessing basics: tokenization, stemming/lemmatization",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Tokenize a sample sentence using a subword tokenizer (e.g. Hugging Face's AutoTokenizer) and print the resulting tokens and token IDs."
+      },
+      {
+        "point": "Text representation: from TF-IDF and Word2Vec/GloVe (static embeddings) to contextual embeddings",
+        "estimatedMinutes": 35,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain why 'bank' gets the same vector in Word2Vec regardless of context, but a different vector in a contextual embedding model like BERT."
+      },
+      {
+        "point": "The Transformer architecture: self-attention, multi-head attention, and positional encoding",
+        "estimatedMinutes": 45,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain in your own words what 'self-attention' allows a transformer to do that a simple word-by-word model cannot."
+      },
+      {
+        "point": "Common NLP tasks: text classification, Named Entity Recognition (NER), sentiment analysis",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Use a pre-trained Hugging Face pipeline to run sentiment analysis and NER on 3 sample sentences and inspect the outputs."
+      },
+      {
+        "point": "Context window: what it is, why it's limited, and how it affects long-document processing",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain what a context window is and describe one practical problem you'd hit if you tried to feed a 500-page document directly into a model with a small context window."
+      },
+      {
+        "point": "Fine-tuning concepts: full fine-tuning vs parameter-efficient fine-tuning (LoRA/QLoRA) at a conceptual level",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain, at a high level, what LoRA does differently from full fine-tuning, and why it's cheaper to run."
+      }
+    ]
+  },
+  {
+    "id": "llm-fundamentals-pretrained-models",
+    "name": "LLM Fundamentals & Using Pre-trained Models",
+    "track": "Tools/Libraries",
+    "priority": "core",
+    "prerequisiteTopicIds": ["dl-nlp-transformer-fundamentals"],
+    "outline": [
+      {
+        "point": "What an AI Engineer does differently from an ML Engineer/Researcher (using pre-trained models vs training from scratch)",
+        "estimatedMinutes": 15,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain, in your own words, the difference between an AI Engineer role (applying pre-trained models) and an ML Engineer/Researcher role (building and training models)."
+      },
+      {
+        "point": "Inference vs training: what happens when you call an LLM API",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain the difference between 'training' a model and 'running inference' on it, using an API call to GPT or Claude as the inference example."
+      },
+      {
+        "point": "Popular pre-trained model families and how to compare them (OpenAI, Anthropic Claude, Google Gemini, open-source models)",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Pick two LLM providers (e.g. OpenAI and Anthropic) and compare their context window sizes and knowledge cutoff dates from their official documentation."
+      },
+      {
+        "point": "Making your first API call: the Chat Completions pattern (system/user/assistant roles)",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a Python script that calls an LLM chat completion API with a system message and a user message, and prints the response."
+      },
+      {
+        "point": "Managing tokens: what a token is, maximum tokens, and basic token counting",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Use a tokenizer library to count how many tokens a sample paragraph consumes, and estimate the API cost using the provider's per-token pricing."
+      },
+      {
+        "point": "Interview-favorite: understanding and mitigating hallucination — why LLMs generate plausible but false statements",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain why an LLM can generate a fluent, confident-sounding answer that is factually wrong, and name one technique (e.g. RAG) used to reduce this."
+      }
+    ]
+  },
+  {
+    "id": "prompt-engineering",
+    "name": "Prompt Engineering",
+    "track": "Tools/Libraries",
+    "priority": "core",
+    "prerequisiteTopicIds": ["llm-fundamentals-pretrained-models"],
+    "outline": [
+      {
+        "point": "Anatomy of a good prompt: instructions, context, examples, and output format",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a system prompt for a customer-support assistant that specifies its role, tone, and the exact output format you want."
+      },
+      {
+        "point": "Zero-shot vs few-shot prompting (providing example inputs/outputs)",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a zero-shot prompt and a few-shot version (with 2-3 examples) for classifying customer messages as 'complaint' or 'question', and compare the outputs."
+      },
+      {
+        "point": "Chain-of-Thought prompting: forcing the model to reason step by step",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a math word problem prompt with and without 'let's think step by step' appended, and compare the two responses."
+      },
+      {
+        "point": "Structured outputs: forcing JSON responses that match a schema",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a prompt (or use structured-output/function-calling mode) that forces the model to return a JSON object with exactly the fields 'name', 'skills', and 'years_experience' from a raw resume text."
+      },
+      {
+        "point": "Prompt templates and reusable prompt patterns",
+        "estimatedMinutes": 20,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a reusable prompt template with placeholders (e.g. {document}, {question}) and fill it in for 3 different documents."
+      },
+      {
+        "point": "Interview-favorite: prompt injection — what it is and basic defenses",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain what a prompt injection attack is, using an example where a user tries to override a system prompt's instructions, and describe one defensive technique."
+      }
+    ]
+  },
+  {
+    "id": "ai-safety-ethics",
+    "name": "AI Safety & Ethics",
+    "track": "Core CS",
+    "priority": "supplementary",
+    "prerequisiteTopicIds": ["prompt-engineering"],
+    "outline": [
+      {
+        "point": "Understanding AI safety issues: bias, fairness, and unsafe outputs (overview)",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain, with an example, how a language model can produce biased outputs even without being explicitly programmed to."
+      },
+      {
+        "point": "Prompt injection attacks and adversarial testing of LLM applications",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Describe one adversarial test you would run against a customer-support chatbot to check whether it can be tricked into leaking its system prompt."
+      },
+      {
+        "point": "Using moderation tools to filter unsafe content (e.g. a moderation API)",
+        "estimatedMinutes": 20,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Send 3 sample pieces of text (safe, borderline, and clearly unsafe) through a content moderation API and inspect the category scores returned."
+      },
+      {
+        "point": "Constraining model inputs and outputs, and knowing your users/use cases before deployment",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "For a hypothetical children's education chatbot, list 3 concrete constraints you would put on both the input and the output."
+      },
+      {
+        "point": "Interview-favorite: security and privacy concerns specific to LLM applications (PII leakage, data retention)",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain one risk of sending user PII (personally identifiable information) directly into a third-party LLM API prompt, and one mitigation."
+      }
+    ]
+  },
+  {
+    "id": "embeddings-vector-databases",
+    "name": "Embeddings & Vector Databases",
+    "track": "Tools/Libraries",
+    "priority": "core",
+    "prerequisiteTopicIds": ["llm-fundamentals-pretrained-models"],
+    "outline": [
+      {
+        "point": "What embeddings are: turning text into vectors that capture semantic meaning",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain, in your own words, why two semantically similar sentences end up with vectors that are close together in embedding space."
+      },
+      {
+        "point": "Generating embeddings using an API (e.g. OpenAI embeddings) and open-source alternatives (Sentence Transformers)",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Generate embeddings for 5 sample sentences using an embeddings API or a Sentence Transformers model, and print the vector dimensions."
+      },
+      {
+        "point": "Measuring similarity: cosine similarity and other distance metrics",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Compute the cosine similarity between the embeddings of 'I love pizza' and 'Pizza is my favorite food', versus 'The weather is cold today', and compare the scores."
+      },
+      {
+        "point": "Use cases for embeddings: semantic search, recommendation, anomaly detection, and classification",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Describe how you would use embeddings to build a 'find similar support tickets' feature."
+      },
+      {
+        "point": "What a vector database is and why you need one at scale (vs. a plain in-memory list of vectors)",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain why searching a list of 10 million embeddings by brute-force cosine similarity becomes impractical, and how a vector database's indexing helps."
+      },
+      {
+        "point": "Picking and using a vector database (e.g. Chroma or FAISS for local development, Pinecone/Weaviate/Qdrant for production)",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Set up a local Chroma or FAISS vector store, insert 5 sample document embeddings, and run a similarity search query against it."
+      },
+      {
+        "point": "Interview-favorite: approximate nearest neighbor (ANN) indexing at a conceptual level, and trade-offs between vector DB options",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain why vector databases use approximate nearest neighbor search instead of exact search for large datasets, and name one trade-off this introduces."
+      }
+    ]
+  },
+  {
+    "id": "open-source-llms-huggingface",
+    "name": "Open-Source LLMs & Hugging Face",
+    "track": "Tools/Libraries",
+    "priority": "supplementary",
+    "prerequisiteTopicIds": ["llm-fundamentals-pretrained-models"],
+    "outline": [
+      {
+        "point": "Open-source vs closed-source models: trade-offs (cost, control, data privacy vs convenience)",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "List 2 reasons a company might choose an open-source model like Llama or Mistral over a closed API like GPT, and 2 reasons they might not."
+      },
+      {
+        "point": "Finding and evaluating models on the Hugging Face Hub",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Search the Hugging Face Hub for a small open-source text-classification model, and read its model card to identify its intended use case and limitations."
+      },
+      {
+        "point": "Using the Hugging Face Transformers library and pipelines for common tasks",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Load a Hugging Face pipeline for text generation and generate a completion for a sample prompt."
+      },
+      {
+        "point": "Running open-source LLMs locally with Ollama",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Install Ollama, pull a small open-source model, and send it a prompt from the command line and from a Python script."
+      },
+      {
+        "point": "Interview-favorite: when to choose a hosted API vs a self-hosted open-source model for a production application",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Argue both sides: give one scenario where a hosted API (like OpenAI) is the better choice, and one where self-hosting an open-source model makes more sense."
+      }
+    ]
+  },
+  {
+    "id": "rag-systems",
+    "name": "RAG (Retrieval-Augmented Generation) Systems",
+    "track": "Tools/Libraries",
+    "priority": "core",
+    "prerequisiteTopicIds": ["embeddings-vector-databases", "prompt-engineering"],
+    "outline": [
+      {
+        "point": "What RAG is and the problem it solves (limited context, stale training data, hallucination)",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain, in your own words, why RAG can reduce hallucinations by grounding an LLM's answer in retrieved documents, without eliminating them entirely."
+      },
+      {
+        "point": "RAG vs fine-tuning: when to use which approach",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "For a company wanting a chatbot that answers questions about its constantly-changing product catalog, explain why RAG is likely a better fit than fine-tuning."
+      },
+      {
+        "point": "Document ingestion and chunking strategies (fixed-size, recursive, semantic chunking)",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Split a sample multi-paragraph document into chunks using a recursive character splitter (e.g. ~400-512 tokens with 10-20% overlap) and inspect the resulting chunks."
+      },
+      {
+        "point": "Embedding and indexing chunks into a vector store",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Embed your chunked document from the previous step and store the embeddings in a local vector database (e.g. Chroma)."
+      },
+      {
+        "point": "The retrieval process: similarity search and building the augmented prompt",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write code that takes a user question, retrieves the top-3 most relevant chunks from your vector store, and assembles them into a prompt for the LLM."
+      },
+      {
+        "point": "Building an end-to-end RAG pipeline using a framework (LangChain or LlamaIndex)",
+        "estimatedMinutes": 40,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Use LangChain's RetrievalQA (or LlamaIndex's query engine) to build a working question-answering system over a small set of documents."
+      },
+      {
+        "point": "Evaluating RAG quality: coherence vs faithfulness, and why bigger context windows don't fix bad retrieval",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain the difference between a RAG answer that is 'coherent' and one that is 'faithful' to the retrieved documents, and why a system can score well on one but poorly on the other."
+      },
+      {
+        "point": "Interview-favorite: designing a RAG system end-to-end in an interview (a very common 2026 AI Engineer interview question)",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Practice a 5-minute mock answer to 'design a RAG system for our customer support product', covering ingestion, chunking, embedding, retrieval, and generation."
+      }
+    ]
+  },
+  {
+    "id": "ai-agents-orchestration",
+    "name": "AI Agents & Orchestration",
+    "track": "Tools/Libraries",
+    "priority": "core",
+    "prerequisiteTopicIds": ["rag-systems", "prompt-engineering"],
+    "outline": [
+      {
+        "point": "What an AI agent is, and how it differs from a plain RAG/prompt-response system",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain the difference between a simple RAG chatbot and an agent that can decide which tool to call next."
+      },
+      {
+        "point": "Function calling / tool calling: letting an LLM invoke external functions with structured arguments",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Define a simple 'get_weather(city)' function schema and use an LLM's function/tool-calling feature to have it decide when to call this function based on a user message."
+      },
+      {
+        "point": "The ReAct pattern: reasoning and acting in a loop (thought → action → observation)",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Trace through, step by step, how a ReAct agent would answer 'What is the population of the capital of France?' using a search tool, writing out each thought/action/observation."
+      },
+      {
+        "point": "Building a basic agent using LangChain (or LangGraph) with one or two tools",
+        "estimatedMinutes": 40,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Build a LangChain agent with a calculator tool and a search tool, then ask it a question that requires using both."
+      },
+      {
+        "point": "Agent memory: keeping track of conversation history and state across turns",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain why an agent without memory would fail at a multi-turn task like 'book me a flight, then find a hotel near where I'm flying'."
+      },
+      {
+        "point": "Multi-agent systems: when and why to split work across multiple specialized agents (conceptual)",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Describe a scenario where you'd split a task across two specialized agents (e.g. a 'researcher' agent and a 'writer' agent) instead of using one agent for everything."
+      },
+      {
+        "point": "Interview-favorite: agent reliability and debugging — why agents can get stuck in loops or call the wrong tool",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain one common failure mode of AI agents (e.g. infinite tool-calling loops) and one design technique to guard against it (e.g. a maximum step limit)."
+      }
+    ]
+  },
+  {
+    "id": "docker-deployment-basics",
+    "name": "Docker & Deployment Basics",
+    "track": "Tools/Libraries",
+    "priority": "core",
+    "prerequisiteTopicIds": ["rest-apis-fastapi"],
+    "outline": [
+      {
+        "point": "What containers are and why they help deploy AI applications consistently",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain, in your own words, the problem containers solve (the 'it works on my machine' problem)."
+      },
+      {
+        "point": "Writing a basic Dockerfile for a Python/FastAPI application",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a Dockerfile that packages your FastAPI app from the REST APIs topic, and build the image locally."
+      },
+      {
+        "point": "Building and running a container, and exposing ports",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Run your built Docker image, map it to a local port, and confirm you can call your API endpoint from the host machine."
+      },
+      {
+        "point": "Environment variables and managing secrets (e.g. API keys) in containers",
+        "estimatedMinutes": 20,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Modify your Dockerfile/run command to pass an API key as an environment variable instead of hardcoding it in your source code."
+      },
+      {
+        "point": "Interview-favorite: basic understanding of CI/CD pipelines and why they matter for shipping AI services",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain in your own words what a CI/CD pipeline automates, and why automated testing matters more, not less, for AI-powered features."
+      }
+    ]
+  },
+  {
+    "id": "cloud-platforms-basics",
+    "name": "Cloud Platforms for AI (AWS/Azure/GCP Basics)",
+    "track": "Tools/Libraries",
+    "priority": "supplementary",
+    "prerequisiteTopicIds": ["docker-deployment-basics"],
+    "outline": [
+      {
+        "point": "Why AI applications are deployed to the cloud: scalability, managed services, GPU access",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain one reason a startup would choose a managed cloud AI service instead of running everything on their own laptop or server."
+      },
+      {
+        "point": "Overview of managed AI services (e.g. AWS Bedrock, Azure OpenAI Service) vs calling a provider's API directly",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain one advantage of using a managed service like AWS Bedrock to access an LLM instead of calling the model provider's API directly."
+      },
+      {
+        "point": "Deploying a containerized app to a basic cloud compute service",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Deploy the Docker image you built earlier to a free-tier cloud compute service and confirm you can reach it over the internet."
+      },
+      {
+        "point": "Interview-favorite: basic cost/performance trade-offs of cloud AI deployment (latency, cost per token, GPU vs CPU)",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain, at a high level, why running inference on a GPU instance is usually faster but more expensive than a CPU instance, and when the trade-off is worth it."
+      }
+    ]
+  },
+  {
+    "id": "llmops-evaluation-observability",
+    "name": "LLMOps: Evaluation & Observability",
+    "track": "Tools/Libraries",
+    "priority": "supplementary",
+    "prerequisiteTopicIds": ["rag-systems", "ai-agents-orchestration"],
+    "outline": [
+      {
+        "point": "Why evaluating an LLM application is harder than evaluating a traditional classifier (no single 'correct' output)",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain why you can't just check 'exact match' to evaluate whether an LLM's summary of an article is good."
+      },
+      {
+        "point": "Common evaluation metrics for RAG: context relevance, faithfulness/groundedness, answer relevance",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "For a sample RAG answer and its retrieved documents, manually assess whether the answer is 'faithful' (every claim traceable to a document) and explain your reasoning."
+      },
+      {
+        "point": "Using an evaluation framework (e.g. Ragas) to score RAG pipeline outputs",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Run a small evaluation framework on 3 sample question-answer-context triples from your RAG pipeline and inspect the faithfulness/relevance scores."
+      },
+      {
+        "point": "Observability basics: logging prompts, responses, latency, and token usage in production",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Add logging to your FastAPI LLM endpoint that records the prompt, response, latency, and token count for each request."
+      },
+      {
+        "point": "Tracing tools for debugging multi-step chains/agents (e.g. LangSmith-style tracing)",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain what a 'trace' of an agent's execution shows you, and why this is more useful for debugging than just looking at the final output."
+      },
+      {
+        "point": "Interview-favorite: what 'observability in LLM' means and why teams add it before scaling a GenAI feature",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain, in your own words, what observability means for an LLM-powered application and give one metric you would monitor in production."
+      }
+    ]
+  },
+  {
+    "id": "quant-logical-aptitude",
+    "name": "Quantitative Aptitude & Logical Reasoning",
+    "track": "Aptitude",
+    "priority": "supplementary",
+    "prerequisiteTopicIds": [],
+    "outline": [
+      {
+        "point": "Number systems, percentages, and ratio/proportion basics",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Solve 5 mixed percentage and ratio word problems within 10 minutes, timing yourself."
+      },
+      {
+        "point": "Profit, loss, discount, and simple/compound interest problems",
+        "estimatedMinutes": 35,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Solve 5 profit-and-loss and interest word problems, then re-derive each formula from first principles instead of memorizing it."
+      },
+      {
+        "point": "Time, speed, distance and time & work problems",
+        "estimatedMinutes": 35,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Solve 5 time-speed-distance problems and 5 time-and-work problems under a strict 15-minute timer."
+      },
+      {
+        "point": "Permutations, combinations, and basic probability",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Solve 3 permutation/combination problems and 3 basic probability problems."
+      },
+      {
+        "point": "Logical reasoning: number/letter series, coding-decoding, seating arrangements",
+        "estimatedMinutes": 35,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Solve 3 number-series puzzles, 2 coding-decoding puzzles, and one seating-arrangement puzzle, checking answers against explanations afterward."
+      },
+      {
+        "point": "Timed mock-test strategy for section-locked tests (TCS/Infosys/Accenture-style written rounds)",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Take one 20-minute mock aptitude section and afterward write down which question types you should skip-and-return-to next time to save time."
+      }
+    ]
+  }
+]
