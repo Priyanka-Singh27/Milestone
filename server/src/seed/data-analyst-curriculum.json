@@ -1,0 +1,884 @@
+[
+  {
+    "id": "dbms-fundamentals",
+    "name": "DBMS & Database Concepts",
+    "track": "Core CS",
+    "priority": "core",
+    "prerequisiteTopicIds": [],
+    "outline": [
+      {
+        "point": "What a DBMS is and relational model basics (tables, rows, columns, schemas)",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain out loud, with an example table, what a schema, a row, and a column represent in a relational database."
+      },
+      {
+        "point": "Keys: primary key, foreign key, candidate key, composite key",
+        "estimatedMinutes": 40,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Sketch two related tables (e.g. Orders and Customers) and label the primary key and foreign key that connects them."
+      },
+      {
+        "point": "Entity-Relationship (ER) modeling: entities, attributes, relationships, cardinality",
+        "estimatedMinutes": 45,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Draw an ER diagram for a simple 'library' system with Books, Members, and Loans, marking cardinality (one-to-many, many-to-many)."
+      },
+      {
+        "point": "Normalization: 1NF, 2NF, 3NF and why redundancy is removed",
+        "estimatedMinutes": 50,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Take an unnormalized sample table with repeating groups and manually normalize it to 3NF, explaining each step."
+      },
+      {
+        "point": "Denormalization: when and why analysts intentionally combine tables for reporting",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain a real scenario (e.g. a reporting table) where denormalization would be preferred over a fully normalized schema, and why."
+      },
+      {
+        "point": "Transactions and ACID properties (Atomicity, Consistency, Isolation, Durability)",
+        "estimatedMinutes": 35,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain each ACID property out loud using a bank fund-transfer example."
+      },
+      {
+        "point": "Transaction isolation levels and the read phenomena they prevent: dirty reads, non-repeatable reads, phantom reads",
+        "estimatedMinutes": 35,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain the difference between dirty reads, non-repeatable reads, and phantom reads out loud, with one example of each, and state which isolation level (Read Uncommitted/Read Committed/Repeatable Read/Serializable) prevents which."
+      },
+      {
+        "point": "Indexes: what they are and how they speed up queries at a high level",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain to a peer why a query filtering on an indexed column is faster than one filtering on a non-indexed column, without going into B-tree internals."
+      }
+    ]
+  },
+  {
+    "id": "sql-fundamentals",
+    "name": "SQL Fundamentals (Querying & Filtering)",
+    "track": "Tools/Libraries",
+    "priority": "core",
+    "prerequisiteTopicIds": ["dbms-fundamentals"],
+    "outline": [
+      {
+        "point": "Categories of SQL commands: DDL, DML, DCL, TCL",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "List one command example each for DDL, DML, DCL, and TCL and explain what category each belongs to and why."
+      },
+      {
+        "point": "SELECT, FROM, WHERE — retrieving and filtering rows",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write 3 SELECT queries against a sample 'employees' table filtering by different conditions (equality, range, text match)."
+      },
+      {
+        "point": "Comparison and logical operators, BETWEEN, IN, LIKE, IS NULL",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a query that filters employees hired in the last 2 years, with a salary between two values, whose name starts with 'S'."
+      },
+      {
+        "point": "ORDER BY, LIMIT/TOP, and DISTINCT",
+        "estimatedMinutes": 20,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a query returning the top 5 highest-paid, distinct job titles from a table."
+      },
+      {
+        "point": "Aggregate functions: COUNT, SUM, AVG, MIN, MAX",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a query that returns the total, average, minimum and maximum order amount from an 'orders' table."
+      },
+      {
+        "point": "GROUP BY and HAVING (filtering on aggregated groups)",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a query that groups orders by customer and returns only customers whose total spend exceeds 10,000."
+      },
+      {
+        "point": "Common interview trap: difference between WHERE and HAVING, and behaviour of COUNT(*) vs COUNT(column) vs COUNT(DISTINCT column) with NULLs",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain out loud, with an example containing NULL values, why COUNT(*), COUNT(column), and COUNT(DISTINCT column) can return three different numbers on the same table."
+      },
+      {
+        "point": "Constraints: PRIMARY KEY, FOREIGN KEY, UNIQUE, NOT NULL, CHECK, and DELETE vs TRUNCATE vs DROP",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain the difference between DELETE, TRUNCATE, and DROP, including which ones can be rolled back."
+      }
+    ]
+  },
+  {
+    "id": "sql-joins-window-functions",
+    "name": "SQL Joins, Subqueries, CTEs & Window Functions",
+    "track": "Tools/Libraries",
+    "priority": "core",
+    "prerequisiteTopicIds": ["sql-fundamentals"],
+    "outline": [
+      {
+        "point": "INNER JOIN, LEFT/RIGHT JOIN, FULL OUTER JOIN — combining rows from multiple tables",
+        "estimatedMinutes": 45,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Given Orders and Customers tables, write an INNER JOIN and a LEFT JOIN query and explain the difference in the row counts returned."
+      },
+      {
+        "point": "Self joins and cross joins",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a self-join query to find employees who report to the same manager (an employee hierarchy table)."
+      },
+      {
+        "point": "Subqueries: scalar subqueries, subqueries in WHERE/FROM, correlated vs non-correlated",
+        "estimatedMinutes": 40,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write one non-correlated subquery (e.g. find rows above the overall average) and one correlated subquery (e.g. find the max order per customer)."
+      },
+      {
+        "point": "EXISTS / NOT EXISTS vs IN / NOT IN, and NULL-safety pitfalls",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain why NOT IN can silently return zero rows when the subquery contains a NULL, and how NOT EXISTS avoids that problem."
+      },
+      {
+        "point": "Common Table Expressions (CTEs) with WITH, including multi-step CTEs",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Rewrite a nested subquery as a CTE and explain why the CTE version is easier to read."
+      },
+      {
+        "point": "Recursive CTEs for hierarchical data (e.g. org charts)",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Write a recursive CTE that lists an employee and all of their subordinates down the management chain."
+      },
+      {
+        "point": "Window functions: ROW_NUMBER, RANK, DENSE_RANK with PARTITION BY and ORDER BY",
+        "estimatedMinutes": 40,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a query that ranks employees by salary within each department using RANK() and DENSE_RANK(), and explain the difference in output when there are ties."
+      },
+      {
+        "point": "LAG/LEAD and running totals (ROWS BETWEEN) for time-series comparisons",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Write a query that calculates month-over-month sales growth using LAG(), and a separate query for a running total using SUM() OVER."
+      },
+      {
+        "point": "'Top-N per group' pattern using window functions (a very common interview question)",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Write a query that returns the top 3 highest-paid employees in each department using ROW_NUMBER() inside a CTE."
+      }
+    ]
+  },
+  {
+    "id": "ms-excel",
+    "name": "MS Excel for Data Analysis",
+    "track": "Tools/Libraries",
+    "priority": "core",
+    "prerequisiteTopicIds": [],
+    "outline": [
+      {
+        "point": "Workbook basics, cell referencing (relative vs absolute with $)",
+        "estimatedMinutes": 20,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Build a small sheet with one formula using a relative reference and one using an absolute reference ($A$1), then copy both down to see the difference."
+      },
+      {
+        "point": "Core formulas: SUM, AVERAGE, COUNT, COUNTIF, SUMIF, IF (including nested IF)",
+        "estimatedMinutes": 40,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "On a sample sales sheet, write formulas to sum sales for one region, count orders above a threshold, and flag orders as 'High'/'Low' using IF."
+      },
+      {
+        "point": "Lookup functions: VLOOKUP, then INDEX-MATCH, then XLOOKUP",
+        "estimatedMinutes": 40,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Solve the same lookup problem three ways — with VLOOKUP, INDEX-MATCH, and XLOOKUP — and note where VLOOKUP fails but the other two don't (e.g. looking left)."
+      },
+      {
+        "point": "Data cleaning tools: Remove Duplicates, Text-to-Columns, Find & Replace, data validation",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Take a messy dataset with duplicate rows and inconsistent text formatting and clean it using Remove Duplicates and Text-to-Columns."
+      },
+      {
+        "point": "Sorting, filtering, and Conditional Formatting",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Apply conditional formatting to highlight the top 10% of values in a sales column, then filter to show only one product category."
+      },
+      {
+        "point": "PivotTables and PivotCharts — summarizing and slicing large datasets",
+        "estimatedMinutes": 45,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Build a PivotTable that shows total sales by region and month, then add a PivotChart to visualize it."
+      },
+      {
+        "point": "Calculated fields inside PivotTables",
+        "estimatedMinutes": 20,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Add a calculated field to your PivotTable that computes profit margin as (Sales-Cost)/Sales."
+      },
+      {
+        "point": "Interview-favorite distinctions: VLOOKUP vs INDEX-MATCH vs XLOOKUP, and calculated field vs calculated item in a PivotTable",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain out loud why INDEX-MATCH/XLOOKUP are usually preferred over VLOOKUP in interviews, and the difference between a PivotTable calculated field and a calculated item."
+      },
+      {
+        "point": "Basic Macros/VBA awareness for automating repetitive tasks (conceptual overview only)",
+        "estimatedMinutes": 15,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain in your own words what a macro is and give one repetitive Excel task you would automate with one."
+      }
+    ]
+  },
+  {
+    "id": "python-fundamentals",
+    "name": "Python Programming Fundamentals",
+    "track": "Tools/Libraries",
+    "priority": "core",
+    "prerequisiteTopicIds": [],
+    "outline": [
+      {
+        "point": "Variables, basic data types (int, float, str, bool)",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a short script that declares one variable of each basic type and prints its type using type()."
+      },
+      {
+        "point": "Core data structures: lists, tuples, dictionaries, sets",
+        "estimatedMinutes": 45,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Create a list of 5 numbers, a tuple of 3 strings, and a dictionary mapping 3 names to ages; then print one element from each."
+      },
+      {
+        "point": "Control flow: if/elif/else and loops (for, while)",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a loop that goes through a list of numbers and prints whether each is even or odd."
+      },
+      {
+        "point": "Functions: defining, arguments, return values",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a function that takes a list of numbers and returns the average, then call it on two different lists."
+      },
+      {
+        "point": "String manipulation and basic file/CSV reading (open, csv module or simple text parsing)",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write a script that reads a small text file line by line and counts how many lines contain a given word."
+      },
+      {
+        "point": "Interview-favorite: mutability difference between list and tuple, and list/dict comprehensions",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain why you can modify a list in place but not a tuple, then rewrite a for-loop that builds a list of squares as a one-line list comprehension."
+      }
+    ]
+  },
+  {
+    "id": "numpy",
+    "name": "NumPy",
+    "track": "Tools/Libraries",
+    "priority": "core",
+    "prerequisiteTopicIds": ["python-fundamentals"],
+    "outline": [
+      {
+        "point": "What NumPy is and why arrays are faster than plain Python lists for numeric work",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain in your own words why a NumPy ndarray is faster than a Python list for numerical operations on large data."
+      },
+      {
+        "point": "Creating arrays (np.array, np.zeros, np.ones, np.arange) and understanding ndim/shape/size",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Write 3-4 short snippets creating arrays with np.array, np.zeros, and np.arange, then print each array's shape and ndim."
+      },
+      {
+        "point": "Indexing and slicing 1D and 2D arrays",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Create a 2D array and write slices that extract a single row, a single column, and a sub-block of it."
+      },
+      {
+        "point": "Vectorized arithmetic operations and broadcasting",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Add a 1D array of shape (3,) to a 2D array of shape (3,3) and explain what broadcasting rule made that work."
+      },
+      {
+        "point": "Aggregate functions: sum, mean, min, max, std along axes",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "On a 2D array, compute the column-wise mean and the row-wise sum, specifying the axis parameter correctly for each."
+      },
+      {
+        "point": "Converting between Pandas DataFrame/Series and NumPy arrays (to_numpy())",
+        "estimatedMinutes": 15,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Given a small Pandas DataFrame, convert it to a NumPy array using to_numpy() and print the result."
+      },
+      {
+        "point": "Interview-favorite: NumPy array vs Python list (memory, speed, type homogeneity), and boolean masking for filtering arrays",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain the key differences between a NumPy array and a Python list, then write a boolean mask that filters an array to keep only values greater than 10."
+      }
+    ]
+  },
+  {
+    "id": "pandas",
+    "name": "Pandas",
+    "track": "Tools/Libraries",
+    "priority": "core",
+    "prerequisiteTopicIds": ["numpy"],
+    "outline": [
+      {
+        "point": "Series and DataFrame: the two core Pandas data structures",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Create one Series and one DataFrame from scratch and explain, in your own words, the difference between them."
+      },
+      {
+        "point": "Reading and writing data: read_csv, read_excel, to_csv, head()/tail()/info()/describe()",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Load a CSV file into a DataFrame, then print its first 5 rows, its info(), and its describe() summary."
+      },
+      {
+        "point": "Selecting and filtering data with loc, iloc, and boolean conditions",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Use .loc to select rows where a column value exceeds a threshold, and .iloc to select the first 10 rows and first 3 columns."
+      },
+      {
+        "point": "Handling missing data: isna(), fillna(), dropna()",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "On a DataFrame with missing values, count the missing values per column, then try both dropna() and fillna() and compare the resulting shapes."
+      },
+      {
+        "point": "GroupBy and aggregation (groupby().agg(), value_counts())",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Group a sales DataFrame by 'region' and compute total and average sales per region using groupby().agg()."
+      },
+      {
+        "point": "Merging, joining and concatenating DataFrames (merge, join, concat, and join types)",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Merge two small DataFrames (e.g. orders and customers) using an inner merge and a left merge, and compare the resulting row counts."
+      },
+      {
+        "point": "Interview-favorite: .loc vs .iloc, and merge vs join vs concat — when to use which",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain the difference between .loc and .iloc, and explain when you would use merge() versus concat() on two DataFrames."
+      },
+      {
+        "point": "Apply/map/lambda for custom row/column transformations",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Use .apply() with a lambda function to create a new column that categorizes a numeric column into 'Low'/'Medium'/'High'."
+      }
+    ]
+  },
+  {
+    "id": "data-cleaning-eda",
+    "name": "Data Cleaning & Exploratory Data Analysis (EDA)",
+    "track": "Tools/Libraries",
+    "priority": "core",
+    "prerequisiteTopicIds": ["pandas", "sql-fundamentals"],
+    "outline": [
+      {
+        "point": "The data analysis workflow: collect, clean, explore, analyze, communicate",
+        "estimatedMinutes": 15,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain the 5-step data analysis workflow out loud using a real dataset you've worked with as the example."
+      },
+      {
+        "point": "Detecting and handling missing values (deciding fill vs drop vs flag)",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "On a raw dataset, identify which columns have missing values, and decide (with reasoning) whether to drop, fill, or flag each one."
+      },
+      {
+        "point": "Removing duplicates and standardizing inconsistent categorical values (e.g. 'NY' vs 'New York')",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Find and remove duplicate rows in a dataset, then standardize a categorical column that has inconsistent spellings/casing."
+      },
+      {
+        "point": "Detecting outliers (IQR method, z-score) and deciding how to treat them",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Use the IQR method to flag outliers in a numeric column, then decide and justify whether to cap, remove, or keep them."
+      },
+      {
+        "point": "Understanding relationships between variables (correlation, cross-tabulation)",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Compute a correlation matrix for a numeric dataset and identify the two most correlated variables."
+      },
+      {
+        "point": "Basic exploratory visualization (histograms, box plots, scatter plots) to spot patterns before formal analysis",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Plot a histogram of one numeric column and a scatter plot of two related columns, and note one pattern you observe."
+      },
+      {
+        "point": "Interview-favorite: how to explain your EDA process end-to-end on a dataset you've never seen, and common data quality issues (schema drift, duplicate keys, inconsistent units)",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Practice narrating, in under 2 minutes, how you would approach EDA on a brand-new sales dataset handed to you in an interview."
+      }
+    ]
+  },
+  {
+    "id": "statistics-probability",
+    "name": "Statistics & Probability for Data Analysis",
+    "track": "Aptitude",
+    "priority": "core",
+    "prerequisiteTopicIds": [],
+    "outline": [
+      {
+        "point": "Descriptive statistics: mean, median, mode, and when each is more appropriate",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain a scenario where median is a better summary statistic than mean, using a skewed income dataset as an example."
+      },
+      {
+        "point": "Measures of spread: variance, standard deviation, IQR",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Compute the variance and standard deviation of a small dataset by hand, then explain what a higher standard deviation implies."
+      },
+      {
+        "point": "Basic probability concepts and common distributions (normal, binomial)",
+        "estimatedMinutes": 35,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain the shape and one real-world example each of a normal distribution and a binomial distribution."
+      },
+      {
+        "point": "The Central Limit Theorem and why it matters for sampling",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain the Central Limit Theorem out loud and describe one practical situation (e.g. quality control sampling) where it applies."
+      },
+      {
+        "point": "Correlation vs causation",
+        "estimatedMinutes": 15,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Give one real example where two variables are correlated but not causally related, and explain why."
+      },
+      {
+        "point": "Hypothesis testing: null vs alternative hypothesis, p-values, significance level",
+        "estimatedMinutes": 40,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain hypothesis testing and p-values in plain language using a courtroom-trial analogy, as if explaining to a non-technical stakeholder."
+      },
+      {
+        "point": "Type I vs Type II errors",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain the difference between a Type I error and a Type II error using a medical-test example (false positive vs false negative)."
+      },
+      {
+        "point": "A/B testing basics and how it's applied to business decisions",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Design a simple A/B test outline (control vs treatment, metric, sample split) for testing two versions of a website button."
+      },
+      {
+        "point": "Simple and multiple linear regression: interpreting coefficients and assumptions",
+        "estimatedMinutes": 35,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Given a regression output with a coefficient of 2.5 for 'advertising spend', explain in plain language what that coefficient means."
+      }
+    ]
+  },
+  {
+    "id": "power-bi",
+    "name": "Power BI",
+    "track": "Tools/Libraries",
+    "priority": "core",
+    "prerequisiteTopicIds": ["ms-excel", "sql-fundamentals"],
+    "outline": [
+      {
+        "point": "Power BI ecosystem overview: Power BI Desktop vs Power BI Service vs Power BI Mobile",
+        "estimatedMinutes": 15,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain, in your own words, what each of Power BI Desktop, Power BI Service, and Power BI Mobile is used for."
+      },
+      {
+        "point": "Connecting to data sources and connectivity modes (Import vs DirectQuery)",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Connect a CSV/Excel file to Power BI Desktop using Import mode and note where the connectivity mode setting appears."
+      },
+      {
+        "point": "Power Query (M): shaping and transforming data before loading",
+        "estimatedMinutes": 40,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "In Power Query, remove a column, rename a column, and split a text column into two using the Power Query editor."
+      },
+      {
+        "point": "Data modeling: relationships between tables and star schema basics",
+        "estimatedMinutes": 35,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Build a relationship between a fact table (sales) and a dimension table (products) in Power BI's Model view, and explain why star schema improves report performance."
+      },
+      {
+        "point": "DAX fundamentals: calculated columns vs measures",
+        "estimatedMinutes": 40,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Create one calculated column and one DAX measure (e.g. Total Sales = SUM(Sales[Amount])) and explain when you'd choose one over the other."
+      },
+      {
+        "point": "Common DAX functions: SUM, CALCULATE, FILTER, ALL",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Write a DAX measure using CALCULATE to compute sales for a specific product category only, overriding the current filter context."
+      },
+      {
+        "point": "Building visualizations, slicers, and interactive dashboards",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Build a one-page dashboard with a bar chart, a line chart, and a slicer that filters both visuals by date."
+      },
+      {
+        "point": "Publishing to Power BI Service, scheduling refresh, and Row-Level Security (RLS) basics",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain what Row-Level Security does in Power BI and why an organization would need it for a shared sales dashboard."
+      },
+      {
+        "point": "Interview-favorite: Power BI vs Tableau comparison, and difference between Power Query and Power Pivot",
+        "estimatedMinutes": 15,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain out loud, in 3-4 sentences, the key differences between Power BI and Tableau, and between Power Query and Power Pivot."
+      }
+    ]
+  },
+  {
+    "id": "tableau",
+    "name": "Tableau",
+    "track": "Tools/Libraries",
+    "priority": "core",
+    "prerequisiteTopicIds": ["sql-fundamentals"],
+    "outline": [
+      {
+        "point": "Tableau interface basics: connecting to data, dimensions vs measures",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Connect a sample dataset to Tableau and identify which fields Tableau auto-classified as dimensions and which as measures, correcting any that seem wrong."
+      },
+      {
+        "point": "Building basic worksheets: bar charts, line charts, and using the Marks card",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Build a bar chart of sales by category and a line chart of sales over time, adjusting the Marks card to add labels and color."
+      },
+      {
+        "point": "Filters, sorting, and groups vs sets",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Create a group that consolidates two inconsistent category labels into one, and a set that captures your top 10 customers by sales."
+      },
+      {
+        "point": "Calculated fields: basic expressions (row-level and aggregate)",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Create a calculated field for Profit = Sales - Cost, then use it in a new chart."
+      },
+      {
+        "point": "Table calculations (running totals, rankings) vs basic calculated fields",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Add a running-total table calculation on a sales-over-time line chart and explain why it's a table calculation rather than a basic calculated field."
+      },
+      {
+        "point": "Level of Detail (LOD) expressions: FIXED, INCLUDE, EXCLUDE",
+        "estimatedMinutes": 40,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Write a FIXED LOD expression that computes total sales per region regardless of what's currently in the view, then compare its result to a normal aggregate."
+      },
+      {
+        "point": "Parameters and dynamic filtering/metric switching",
+        "estimatedMinutes": 25,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Create a parameter that lets a user switch a chart between showing 'Sales' and 'Profit'."
+      },
+      {
+        "point": "Building and publishing interactive dashboards with actions (filter actions, highlight actions)",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Combine two worksheets into a dashboard and add a filter action so clicking a bar in one chart filters the other."
+      },
+      {
+        "point": "Interview-favorite: extract vs live connection, and when to use a table calculation vs an LOD expression",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain the difference between a live connection and an extract in Tableau, and decide which you'd use for a large, frequently-updated dataset."
+      }
+    ]
+  },
+  {
+    "id": "data-modeling-warehousing",
+    "name": "Data Modeling & Data Warehousing Concepts",
+    "track": "Core CS",
+    "priority": "supplementary",
+    "prerequisiteTopicIds": ["dbms-fundamentals", "sql-joins-window-functions"],
+    "outline": [
+      {
+        "point": "What a data warehouse is and how it differs from an operational (OLTP) database",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain the difference between an OLTP system and a data warehouse (OLAP), using a retail company as the example."
+      },
+      {
+        "point": "Fact tables vs dimension tables",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Design a simple fact table (sales transactions) and two dimension tables (product, date) for a retail dataset."
+      },
+      {
+        "point": "Star schema vs snowflake schema",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Sketch the same sales data model as both a star schema and a snowflake schema, and explain one trade-off between them."
+      },
+      {
+        "point": "Basic ETL/ELT concepts: extract, transform, load and where each step happens",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Explain the difference between ETL and ELT and give one reason a modern cloud warehouse might prefer ELT."
+      },
+      {
+        "point": "Awareness of Medallion architecture (Bronze/Silver/Gold layers) as used in modern data platforms",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain in your own words what data would live in the Bronze, Silver, and Gold layers of a Medallion architecture."
+      },
+      {
+        "point": "Interview-favorite: slowly changing dimensions (SCD Type 1 vs Type 2) conceptually",
+        "estimatedMinutes": 25,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain the difference between a Type 1 and Type 2 slowly changing dimension using a customer 'address change' example."
+      }
+    ]
+  },
+  {
+    "id": "quant-logical-aptitude",
+    "name": "Quantitative Aptitude & Logical Reasoning",
+    "track": "Aptitude",
+    "priority": "supplementary",
+    "prerequisiteTopicIds": [],
+    "outline": [
+      {
+        "point": "Number systems, percentages, and ratio/proportion basics",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Solve 5 mixed percentage and ratio word problems within 10 minutes, timing yourself."
+      },
+      {
+        "point": "Profit, loss and discount problems",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Solve 5 profit-and-loss word problems, then re-derive each formula from first principles instead of memorizing it."
+      },
+      {
+        "point": "Time, speed, distance and time & work problems",
+        "estimatedMinutes": 35,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Solve 5 time-speed-distance problems and 5 time-and-work problems under a strict 15-minute timer."
+      },
+      {
+        "point": "Simple and compound interest, averages, permutations & combinations, and basic probability",
+        "estimatedMinutes": 40,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Solve one problem each on simple interest, compound interest, averages, permutations/combinations, and probability."
+      },
+      {
+        "point": "Logical reasoning: number/letter series, coding-decoding, blood relations, seating arrangements",
+        "estimatedMinutes": 35,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Solve 3 number-series puzzles, 2 coding-decoding puzzles, and one seating-arrangement puzzle, checking answers against explanations afterward."
+      },
+      {
+        "point": "Data interpretation from tables, bar/line/pie charts",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "docs",
+        "practicePrompt": "Answer 5 data-interpretation questions based on a given bar chart and table, focusing on speed rather than complexity."
+      },
+      {
+        "point": "Timed mock-test strategy for section-locked tests (TCS/Infosys/AMCAT-style)",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Take one 20-minute mock aptitude section and afterward write down which question types you should skip-and-return-to next time to save time."
+      }
+    ]
+  },
+  {
+    "id": "dsa-basics-arrays-strings-hashing",
+    "name": "Basic DSA for Data Analyst Interviews (Arrays, Strings & Hashing)",
+    "track": "DSA",
+    "priority": "supplementary",
+    "prerequisiteTopicIds": ["python-fundamentals"],
+    "outline": [
+      {
+        "point": "What arrays and strings are, and basic traversal (looping through elements)",
+        "estimatedMinutes": 20,
+        "type": "conceptual",
+        "source": "docs",
+        "practicePrompt": "Write a loop that traverses a list of numbers and prints each element along with its index."
+      },
+      {
+        "point": "Common array operations: insertion, deletion, searching, and reversing without built-in shortcuts",
+        "estimatedMinutes": 35,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Write a function that reverses a list in place without using Python's built-in reverse() or slicing shortcut, and one that performs a linear search for a target value."
+      },
+      {
+        "point": "Frequency counting using a dictionary/hashmap (a very commonly asked pattern)",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Write a function that takes a list of numbers and returns a dictionary of how many times each number appears."
+      },
+      {
+        "point": "Basic string manipulation problems: palindrome check, counting character frequency, string reversal",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Write a function that checks if a given string is a palindrome, and another that counts the frequency of each character in a string."
+      },
+      {
+        "point": "Time and space complexity basics (Big-O) at an intuitive, non-mathematical level",
+        "estimatedMinutes": 30,
+        "type": "conceptual",
+        "source": "interview-questions",
+        "practicePrompt": "Explain, in plain language, why a linear search is O(n) and why looking up a value in a dictionary is close to O(1), without deriving formal proofs."
+      },
+      {
+        "point": "Practicing the interview pattern: 'find the frequency of numbers in an array' and simple two-pointer/array problems",
+        "estimatedMinutes": 30,
+        "type": "practical",
+        "source": "interview-questions",
+        "practicePrompt": "Solve 3 easy array/string problems (frequency count, two-sum style, reverse a string) on paper first, then verify by running the code."
+      }
+    ]
+  }
+]
