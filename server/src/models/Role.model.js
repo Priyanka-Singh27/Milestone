@@ -15,6 +15,7 @@ const topicSchema = new mongoose.Schema({
   priority: { type: String, enum: ['core', 'supplementary'], required: true },
   prerequisiteTopicIds: [{ type: String }],
   outline: [outlinePointSchema],
+  quizEligible: { type: Boolean, default: true },
 }, { _id: false });
 
 const roleSchema = new mongoose.Schema({

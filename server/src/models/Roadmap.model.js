@@ -18,6 +18,7 @@ const roadmapDaySchema = new mongoose.Schema({
   dayNumber: { type: Number, required: true },
   date: { type: Date, required: true },
   tasks: [roadmapTaskSchema],
+  phase: { type: String, enum: ['foundational', 'practice'] },
 }, { _id: false });
 
 const roadmapSchema = new mongoose.Schema({

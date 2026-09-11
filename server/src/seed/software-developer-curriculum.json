@@ -55,14 +55,17 @@
         "source": "interview-questions",
         "practicePrompt": "Explain out loud the difference between stack and heap memory in C++, and describe one scenario that causes a memory leak."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "complexity-analysis",
     "name": "Time & Space Complexity Analysis",
     "track": "DSA",
     "priority": "core",
-    "prerequisiteTopicIds": ["programming-fundamentals-cpp"],
+    "prerequisiteTopicIds": [
+      "programming-fundamentals-cpp"
+    ],
     "outline": [
       {
         "point": "What time and space complexity measure, and why they matter",
@@ -106,14 +109,17 @@
         "source": "interview-questions",
         "practicePrompt": "For the 'two sum' problem, compare the brute-force O(n^2) solution to the hashmap-based O(n) solution and explain the time-space trade-off out loud."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "oop-concepts",
     "name": "Object-Oriented Programming (OOP)",
     "track": "Core CS",
     "priority": "core",
-    "prerequisiteTopicIds": ["programming-fundamentals-cpp"],
+    "prerequisiteTopicIds": [
+      "programming-fundamentals-cpp"
+    ],
     "outline": [
       {
         "point": "Classes and objects: defining a class, creating objects, member variables and methods",
@@ -171,14 +177,18 @@
         "source": "interview-questions",
         "practicePrompt": "Describe a scenario where you would prefer composition ('has-a') over inheritance ('is-a'), and name one SOLID principle you could apply to improve it."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "arrays-strings",
     "name": "Arrays & Strings",
     "track": "DSA",
     "priority": "core",
-    "prerequisiteTopicIds": ["programming-fundamentals-cpp", "complexity-analysis"],
+    "prerequisiteTopicIds": [
+      "programming-fundamentals-cpp",
+      "complexity-analysis"
+    ],
     "outline": [
       {
         "point": "Array representation, traversal, and time complexity of access/insert/delete",
@@ -229,14 +239,17 @@
         "source": "docs",
         "practicePrompt": "Write a function that transposes a square matrix in place."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "recursion-backtracking",
     "name": "Recursion & Backtracking",
     "track": "DSA",
     "priority": "core",
-    "prerequisiteTopicIds": ["arrays-strings"],
+    "prerequisiteTopicIds": [
+      "arrays-strings"
+    ],
     "outline": [
       {
         "point": "What recursion is: base case, recursive case, and the call stack",
@@ -287,14 +300,18 @@
         "source": "interview-questions",
         "practicePrompt": "Explain when you would prefer an iterative solution over a recursive one, referencing stack overflow risk on deep recursion."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "sorting-searching",
     "name": "Sorting & Searching Algorithms",
     "track": "DSA",
     "priority": "core",
-    "prerequisiteTopicIds": ["arrays-strings", "complexity-analysis"],
+    "prerequisiteTopicIds": [
+      "arrays-strings",
+      "complexity-analysis"
+    ],
     "outline": [
       {
         "point": "Linear search and binary search (iterative and recursive)",
@@ -338,14 +355,17 @@
         "source": "interview-questions",
         "practicePrompt": "Explain why quicksort's worst case is O(n^2) but it's still often used in practice over merge sort."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "linked-lists",
     "name": "Linked Lists",
     "track": "DSA",
     "priority": "core",
-    "prerequisiteTopicIds": ["arrays-strings"],
+    "prerequisiteTopicIds": [
+      "arrays-strings"
+    ],
     "outline": [
       {
         "point": "Singly linked list structure: node, head, traversal",
@@ -389,14 +409,18 @@
         "source": "interview-questions",
         "practicePrompt": "Write a function that merges two sorted linked lists into one sorted linked list, then explain when you'd choose a linked list over an array."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "stacks-queues",
     "name": "Stacks & Queues",
     "track": "DSA",
     "priority": "core",
-    "prerequisiteTopicIds": ["arrays-strings", "linked-lists"],
+    "prerequisiteTopicIds": [
+      "arrays-strings",
+      "linked-lists"
+    ],
     "outline": [
       {
         "point": "Stack (LIFO): push, pop, peek, and implementing a stack using an array or linked list",
@@ -440,14 +464,17 @@
         "source": "interview-questions",
         "practicePrompt": "Implement a queue using two stacks and explain the amortized time complexity of the dequeue operation."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "hashing",
     "name": "Hashing (Hash Tables/Maps & Sets)",
     "track": "DSA",
     "priority": "core",
-    "prerequisiteTopicIds": ["arrays-strings"],
+    "prerequisiteTopicIds": [
+      "arrays-strings"
+    ],
     "outline": [
       {
         "point": "What a hash function and hash table are, and why average-case lookup is O(1)",
@@ -491,14 +518,18 @@
         "source": "interview-questions",
         "practicePrompt": "Explain why hash table lookups are usually O(1) but can degrade to O(n) in the worst case, and when a balanced BST might be preferred instead."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "trees-bst",
     "name": "Trees & Binary Search Trees",
     "track": "DSA",
     "priority": "core",
-    "prerequisiteTopicIds": ["recursion-backtracking", "linked-lists"],
+    "prerequisiteTopicIds": [
+      "recursion-backtracking",
+      "linked-lists"
+    ],
     "outline": [
       {
         "point": "Tree terminology: root, node, leaf, height, depth; binary tree structure",
@@ -549,14 +580,18 @@
         "source": "interview-questions",
         "practicePrompt": "Explain how a min-heap maintains its 'parent smaller than children' property after an insert, using the sift-up operation."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "graphs",
     "name": "Graphs",
     "track": "DSA",
     "priority": "core",
-    "prerequisiteTopicIds": ["trees-bst", "stacks-queues"],
+    "prerequisiteTopicIds": [
+      "trees-bst",
+      "stacks-queues"
+    ],
     "outline": [
       {
         "point": "Graph terminology and representations: adjacency list vs adjacency matrix",
@@ -607,14 +642,18 @@
         "source": "interview-questions",
         "practicePrompt": "Explain, at a high level, the difference in approach between Prim's algorithm (grows from a node) and Kruskal's algorithm (sorts edges) for building a minimum spanning tree."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "dynamic-programming",
     "name": "Dynamic Programming & Greedy Algorithms",
     "track": "DSA",
     "priority": "core",
-    "prerequisiteTopicIds": ["recursion-backtracking", "arrays-strings"],
+    "prerequisiteTopicIds": [
+      "recursion-backtracking",
+      "arrays-strings"
+    ],
     "outline": [
       {
         "point": "What makes a problem suitable for DP: overlapping subproblems and optimal substructure",
@@ -665,7 +704,8 @@
         "source": "interview-questions",
         "practicePrompt": "Solve the activity selection problem (choosing the maximum number of non-overlapping intervals) using a greedy, sort-by-end-time approach."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "dbms-fundamentals",
@@ -723,14 +763,17 @@
         "source": "interview-questions",
         "practicePrompt": "Explain to a peer why a query filtering on an indexed column is faster than one filtering on a non-indexed column."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "operating-systems-fundamentals",
     "name": "Operating Systems Fundamentals",
     "track": "Core CS",
     "priority": "core",
-    "prerequisiteTopicIds": ["programming-fundamentals-cpp"],
+    "prerequisiteTopicIds": [
+      "programming-fundamentals-cpp"
+    ],
     "outline": [
       {
         "point": "What an OS does: process management, memory management, file systems, I/O (overview)",
@@ -788,7 +831,8 @@
         "source": "interview-questions",
         "practicePrompt": "Explain what thrashing is and why it hurts system performance, then explain the difference between paging and segmentation."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "computer-networks-fundamentals",
@@ -846,14 +890,19 @@
         "source": "interview-questions",
         "practicePrompt": "Practice explaining out loud, end to end, everything that happens from typing a URL to a webpage rendering in the browser."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "system-design-basics",
     "name": "System Design Basics (for Freshers)",
     "track": "Core CS",
     "priority": "supplementary",
-    "prerequisiteTopicIds": ["oop-concepts", "dbms-fundamentals", "operating-systems-fundamentals"],
+    "prerequisiteTopicIds": [
+      "oop-concepts",
+      "dbms-fundamentals",
+      "operating-systems-fundamentals"
+    ],
     "outline": [
       {
         "point": "Why system design is asked even for freshers: thinking about scale and trade-offs, not just correctness",
@@ -897,14 +946,17 @@
         "source": "interview-questions",
         "practicePrompt": "Practice a 5-minute mock answer to 'design a URL shortener' following the structure: clarify requirements → propose a simple design → mention one scaling trade-off."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "sql-basics",
     "name": "SQL Basics for Developers",
     "track": "Tools/Libraries",
     "priority": "core",
-    "prerequisiteTopicIds": ["dbms-fundamentals"],
+    "prerequisiteTopicIds": [
+      "dbms-fundamentals"
+    ],
     "outline": [
       {
         "point": "SELECT, FROM, WHERE — retrieving and filtering rows",
@@ -948,7 +1000,8 @@
         "source": "interview-questions",
         "practicePrompt": "Write a SQL query that finds the second-highest salary from an employees table without using a hardcoded LIMIT/OFFSET of exactly 1."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "git-version-control",
@@ -999,14 +1052,17 @@
         "source": "interview-questions",
         "practicePrompt": "Explain the difference between git merge and git rebase, and describe a scenario where you would use rebase over merge."
       }
-    ]
+    ],
+    "quizEligible": false
   },
   {
     "id": "rest-apis-web-basics",
     "name": "Web Basics & REST APIs",
     "track": "Tools/Libraries",
     "priority": "supplementary",
-    "prerequisiteTopicIds": ["programming-fundamentals-cpp"],
+    "prerequisiteTopicIds": [
+      "programming-fundamentals-cpp"
+    ],
     "outline": [
       {
         "point": "How the client-server model works, and what a request/response cycle looks like",
@@ -1050,7 +1106,8 @@
         "source": "interview-questions",
         "practicePrompt": "Explain the difference between PUT and PATCH, and explain what it means for a REST API to be 'stateless'."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "quant-logical-aptitude",
@@ -1101,6 +1158,7 @@
         "source": "interview-questions",
         "practicePrompt": "Take one 20-minute mock aptitude section and afterward write down which question types you should skip-and-return-to next time to save time."
       }
-    ]
+    ],
+    "quizEligible": false
   }
 ]

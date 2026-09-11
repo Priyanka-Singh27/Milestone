@@ -55,14 +55,17 @@
         "source": "interview-questions",
         "practicePrompt": "Explain why a list is mutable but a tuple is not, then rewrite a for-loop that filters even numbers as a one-line list comprehension."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "python-dsa-basics",
     "name": "Basic DSA for AI Engineering Interviews",
     "track": "DSA",
     "priority": "supplementary",
-    "prerequisiteTopicIds": ["python-fundamentals"],
+    "prerequisiteTopicIds": [
+      "python-fundamentals"
+    ],
     "outline": [
       {
         "point": "Time/space complexity intuition (Big-O) without deep formal analysis",
@@ -99,7 +102,8 @@
         "source": "interview-questions",
         "practicePrompt": "Solve the 'two sum' problem (find two numbers in a list that add to a target) using a dictionary in O(n) time."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "sql-basics",
@@ -143,7 +147,8 @@
         "source": "interview-questions",
         "practicePrompt": "Write a SQL query using window functions to retrieve the 5 most recent chat messages for each user in a messages table."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "git-version-control",
@@ -180,14 +185,17 @@
         "source": "interview-questions",
         "practicePrompt": "Explain the difference between git merge and git rebase, and when you'd prefer rebase for a feature branch."
       }
-    ]
+    ],
+    "quizEligible": false
   },
   {
     "id": "rest-apis-fastapi",
     "name": "REST APIs & FastAPI",
     "track": "Tools/Libraries",
     "priority": "core",
-    "prerequisiteTopicIds": ["python-fundamentals"],
+    "prerequisiteTopicIds": [
+      "python-fundamentals"
+    ],
     "outline": [
       {
         "point": "HTTP basics: methods (GET/POST), status codes, and JSON request/response bodies",
@@ -231,14 +239,17 @@
         "source": "interview-questions",
         "practicePrompt": "Explain why forcing an LLM to return a strict JSON structure (matching a Pydantic model) is more reliable for downstream code than parsing free-form text."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "ml-fundamentals",
     "name": "Machine Learning Fundamentals",
     "track": "Core CS",
     "priority": "core",
-    "prerequisiteTopicIds": ["python-fundamentals"],
+    "prerequisiteTopicIds": [
+      "python-fundamentals"
+    ],
     "outline": [
       {
         "point": "What machine learning is: supervised, unsupervised, and reinforcement learning at a conceptual level",
@@ -289,14 +300,17 @@
         "source": "interview-questions",
         "practicePrompt": "Explain the difference between bagging (e.g. Random Forest) and boosting (e.g. gradient boosting) in your own words."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "dl-nlp-transformer-fundamentals",
     "name": "Deep Learning, NLP & Transformer Fundamentals",
     "track": "Core CS",
     "priority": "core",
-    "prerequisiteTopicIds": ["ml-fundamentals"],
+    "prerequisiteTopicIds": [
+      "ml-fundamentals"
+    ],
     "outline": [
       {
         "point": "Neural network basics: neurons, layers, activation functions, and forward pass (conceptual)",
@@ -347,14 +361,17 @@
         "source": "interview-questions",
         "practicePrompt": "Explain, at a high level, what LoRA does differently from full fine-tuning, and why it's cheaper to run."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "llm-fundamentals-pretrained-models",
     "name": "LLM Fundamentals & Using Pre-trained Models",
     "track": "Tools/Libraries",
     "priority": "core",
-    "prerequisiteTopicIds": ["dl-nlp-transformer-fundamentals"],
+    "prerequisiteTopicIds": [
+      "dl-nlp-transformer-fundamentals"
+    ],
     "outline": [
       {
         "point": "What an AI Engineer does differently from an ML Engineer/Researcher (using pre-trained models vs training from scratch)",
@@ -398,14 +415,17 @@
         "source": "interview-questions",
         "practicePrompt": "Explain why an LLM can generate a fluent, confident-sounding answer that is factually wrong, and name one technique (e.g. RAG) used to reduce this."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "prompt-engineering",
     "name": "Prompt Engineering",
     "track": "Tools/Libraries",
     "priority": "core",
-    "prerequisiteTopicIds": ["llm-fundamentals-pretrained-models"],
+    "prerequisiteTopicIds": [
+      "llm-fundamentals-pretrained-models"
+    ],
     "outline": [
       {
         "point": "Anatomy of a good prompt: instructions, context, examples, and output format",
@@ -449,14 +469,17 @@
         "source": "interview-questions",
         "practicePrompt": "Explain what a prompt injection attack is, using an example where a user tries to override a system prompt's instructions, and describe one defensive technique."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "ai-safety-ethics",
     "name": "AI Safety & Ethics",
     "track": "Core CS",
     "priority": "supplementary",
-    "prerequisiteTopicIds": ["prompt-engineering"],
+    "prerequisiteTopicIds": [
+      "prompt-engineering"
+    ],
     "outline": [
       {
         "point": "Understanding AI safety issues: bias, fairness, and unsafe outputs (overview)",
@@ -493,14 +516,17 @@
         "source": "interview-questions",
         "practicePrompt": "Explain one risk of sending user PII (personally identifiable information) directly into a third-party LLM API prompt, and one mitigation."
       }
-    ]
+    ],
+    "quizEligible": false
   },
   {
     "id": "embeddings-vector-databases",
     "name": "Embeddings & Vector Databases",
     "track": "Tools/Libraries",
     "priority": "core",
-    "prerequisiteTopicIds": ["llm-fundamentals-pretrained-models"],
+    "prerequisiteTopicIds": [
+      "llm-fundamentals-pretrained-models"
+    ],
     "outline": [
       {
         "point": "What embeddings are: turning text into vectors that capture semantic meaning",
@@ -551,14 +577,17 @@
         "source": "interview-questions",
         "practicePrompt": "Explain why vector databases use approximate nearest neighbor search instead of exact search for large datasets, and name one trade-off this introduces."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "open-source-llms-huggingface",
     "name": "Open-Source LLMs & Hugging Face",
     "track": "Tools/Libraries",
     "priority": "supplementary",
-    "prerequisiteTopicIds": ["llm-fundamentals-pretrained-models"],
+    "prerequisiteTopicIds": [
+      "llm-fundamentals-pretrained-models"
+    ],
     "outline": [
       {
         "point": "Open-source vs closed-source models: trade-offs (cost, control, data privacy vs convenience)",
@@ -595,14 +624,18 @@
         "source": "interview-questions",
         "practicePrompt": "Argue both sides: give one scenario where a hosted API (like OpenAI) is the better choice, and one where self-hosting an open-source model makes more sense."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "rag-systems",
     "name": "RAG (Retrieval-Augmented Generation) Systems",
     "track": "Tools/Libraries",
     "priority": "core",
-    "prerequisiteTopicIds": ["embeddings-vector-databases", "prompt-engineering"],
+    "prerequisiteTopicIds": [
+      "embeddings-vector-databases",
+      "prompt-engineering"
+    ],
     "outline": [
       {
         "point": "What RAG is and the problem it solves (limited context, stale training data, hallucination)",
@@ -660,14 +693,18 @@
         "source": "interview-questions",
         "practicePrompt": "Practice a 5-minute mock answer to 'design a RAG system for our customer support product', covering ingestion, chunking, embedding, retrieval, and generation."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "ai-agents-orchestration",
     "name": "AI Agents & Orchestration",
     "track": "Tools/Libraries",
     "priority": "core",
-    "prerequisiteTopicIds": ["rag-systems", "prompt-engineering"],
+    "prerequisiteTopicIds": [
+      "rag-systems",
+      "prompt-engineering"
+    ],
     "outline": [
       {
         "point": "What an AI agent is, and how it differs from a plain RAG/prompt-response system",
@@ -718,14 +755,17 @@
         "source": "interview-questions",
         "practicePrompt": "Explain one common failure mode of AI agents (e.g. infinite tool-calling loops) and one design technique to guard against it (e.g. a maximum step limit)."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "docker-deployment-basics",
     "name": "Docker & Deployment Basics",
     "track": "Tools/Libraries",
     "priority": "core",
-    "prerequisiteTopicIds": ["rest-apis-fastapi"],
+    "prerequisiteTopicIds": [
+      "rest-apis-fastapi"
+    ],
     "outline": [
       {
         "point": "What containers are and why they help deploy AI applications consistently",
@@ -762,14 +802,17 @@
         "source": "interview-questions",
         "practicePrompt": "Explain in your own words what a CI/CD pipeline automates, and why automated testing matters more, not less, for AI-powered features."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "cloud-platforms-basics",
     "name": "Cloud Platforms for AI (AWS/Azure/GCP Basics)",
     "track": "Tools/Libraries",
     "priority": "supplementary",
-    "prerequisiteTopicIds": ["docker-deployment-basics"],
+    "prerequisiteTopicIds": [
+      "docker-deployment-basics"
+    ],
     "outline": [
       {
         "point": "Why AI applications are deployed to the cloud: scalability, managed services, GPU access",
@@ -799,14 +842,18 @@
         "source": "interview-questions",
         "practicePrompt": "Explain, at a high level, why running inference on a GPU instance is usually faster but more expensive than a CPU instance, and when the trade-off is worth it."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "llmops-evaluation-observability",
     "name": "LLMOps: Evaluation & Observability",
     "track": "Tools/Libraries",
     "priority": "supplementary",
-    "prerequisiteTopicIds": ["rag-systems", "ai-agents-orchestration"],
+    "prerequisiteTopicIds": [
+      "rag-systems",
+      "ai-agents-orchestration"
+    ],
     "outline": [
       {
         "point": "Why evaluating an LLM application is harder than evaluating a traditional classifier (no single 'correct' output)",
@@ -850,7 +897,8 @@
         "source": "interview-questions",
         "practicePrompt": "Explain, in your own words, what observability means for an LLM-powered application and give one metric you would monitor in production."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "quant-logical-aptitude",
@@ -901,6 +949,7 @@
         "source": "interview-questions",
         "practicePrompt": "Take one 20-minute mock aptitude section and afterward write down which question types you should skip-and-return-to next time to save time."
       }
-    ]
+    ],
+    "quizEligible": false
   }
 ]
