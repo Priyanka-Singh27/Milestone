@@ -15,11 +15,18 @@ const roadmapTaskSchema = new mongoose.Schema({
 }, { _id: false });
 
 const roadmapDaySchema = new mongoose.Schema({
-  dayNumber: { type: Number, required: true },
+   dayNumber: { type: Number, required: true },
   date: { type: Date, required: true },
+  phase: { type: String, enum: ['foundational', 'practice'], required: true },
+  isBufferDay: { type: Boolean, default: false },
   tasks: [roadmapTaskSchema],
-  phase: { type: String, enum: ['foundational', 'practice'] },
-}, { _id: false });
+  practicePlan: {
+    type: { type: String, enum: ['revision', 'standard'] },
+    dsaProblemCount: Number,
+    aptitudeSetMinutes: Number,
+    weeklyMockInterview: Boolean,
+  },
+ }, { _id: false });
 
 const roadmapSchema = new mongoose.Schema({
   userId: { type: String, required: true },
