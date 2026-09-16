@@ -60,17 +60,17 @@ async function callAnthropic({ system, prompt }) {
 // Requires `npm install groq-sdk` and LLM_API_KEY set.
 // ---------------------------------------------------------------------------
 async function callGroq({ system, prompt }) {
-  // const Groq = require('groq-sdk');
-  // const client = new Groq({ apiKey: process.env.LLM_API_KEY });
-  // const response = await client.chat.completions.create({
-  //   model: 'llama-3.3-70b-versatile', // or whichever model the team picks
-  //   messages: [
-  //     { role: 'system', content: system },
-  //     { role: 'user', content: prompt },
-  //   ],
-  // });
-  // return response.choices[0].message.content;
-  throw new Error('Groq provider not yet implemented — set LLM_PROVIDER=mock for development, or fill in callGroq().');
+  const Groq = require('groq-sdk');
+  const client = new Groq({ apiKey: process.env.LLM_API_KEY });
+  const response = await client.chat.completions.create({
+    model: 'openai/gpt-oss-120b',
+    messages: [
+      { role: 'system', content: system },
+      { role: 'user', content: prompt },
+    ],
+    response_format: { type: 'json_object' }, // every system prompt in this codebase asks for JSON explicitly, which this requires
+  });
+  return response.choices[0].message.content;
 }
 
 // ---------------------------------------------------------------------------
