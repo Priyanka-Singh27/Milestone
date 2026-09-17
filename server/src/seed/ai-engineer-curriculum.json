@@ -106,7 +106,7 @@
     "quizEligible": true
   },
   {
-    "id": "sql-basics",
+    "id": "sql-basics-ai",
     "name": "SQL Basics for AI Engineers",
     "track": "Tools/Libraries",
     "priority": "core",

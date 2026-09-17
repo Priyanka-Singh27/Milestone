@@ -6,6 +6,7 @@ const { callLLM } = require('../services/llm.service');
 const {
   generateNextWindow,
   estimateFoundationalDuration,
+  buildProgressMaps,
 } = require('../utils/scheduler');
 
 const WINDOW_SIZE = 14;
@@ -80,19 +81,6 @@ async function buildRoadmapDays(schedulerDays) {
   );
 }
 
-function buildCompletedChunkMap(roadmap) {
-  const map = new Map();
-  roadmap.days.forEach(day => {
-    if (day.phase !== 'foundational') return;
-    (day.tasks || []).forEach(task => {
-      if (task.status === 'completed' || task.status === 'verified') {
-        map.set(task.id, day.dayNumber);
-      }
-    });
-  });
-  return map;
-}
-
 // ---------------------------------------------------------------------------
 // Split a roadmap's days into PAST (immutable history, date < today) and
 // NON-PAST (today + future — the only days ever recomputed/discarded).
@@ -121,7 +109,7 @@ function hasIncompletePastTask(pastDays) {
 // ---------------------------------------------------------------------------
 async function estimateRoadmap(req, res) {
   try {
-    const { targetRoleId, gapTopicIds, hoursPerDay, bufferInterval } = req.body;
+    const { targetRoleId, gapTopicIds, hoursPerDay, daysPerWeek, bufferInterval } = req.body;
 
     if (!targetRoleId || !Array.isArray(gapTopicIds) || !hoursPerDay) {
       return res.status(400).json({ success: false, error: { code: 'INVALID_INPUT', message: 'targetRoleId, gapTopicIds, and hoursPerDay are required.' } });
@@ -139,7 +127,7 @@ async function estimateRoadmap(req, res) {
       return res.status(400).json({ success: false, error: { code: 'UNKNOWN_TOPIC_IDS', message: `These topic IDs don't exist on role "${role.name}": ${missingIds.join(', ')}` } });
     }
 
-    const estimate = estimateFoundationalDuration({ gapTopics, hoursPerDay, bufferInterval: bufferInterval || 0 });
+    const estimate = estimateFoundationalDuration({ gapTopics, hoursPerDay, daysPerWeek: daysPerWeek || 5, bufferInterval: bufferInterval || 0 });
     res.status(200).json({ success: true, data: { estimate } });
   } catch (err) {
     res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: err.message } });
@@ -175,6 +163,7 @@ async function generateRoadmap(req, res) {
       gapTopics,
       completedChunkMap: new Map(),
       hoursPerDay,
+      daysPerWeek: daysPerWeek || 5,
       bufferInterval: bufferInterval || 0,
       startDayNumber: 1,
       startDate,
@@ -231,13 +220,15 @@ async function getRoadmap(req, res) {
       const role = await Role.findById(roadmap.targetRoleId);
       if (role) {
         const gapTopics = role.topics.filter(t => roadmap.gapTopicIds.includes(t.id));
-        const completedChunkMap = buildCompletedChunkMap(roadmap); // built from ALL days, including the about-to-be-discarded ones, so anything genuinely done stays done
+        const { completedChunkMap, remainingMinutesMap } = buildProgressMaps(roadmap.days, gapTopics); // built from ALL days, including the about-to-be-discarded ones, so anything genuinely done stays done — and partial progress (item 4) carries forward too
         const lastPastDayNumber = past.length > 0 ? past[past.length - 1].dayNumber : 0;
 
         const { days } = generateNextWindow({
           gapTopics,
           completedChunkMap,
+          remainingMinutesMap,
           hoursPerDay: roadmap.hoursPerDay,
+          daysPerWeek: roadmap.daysPerWeek || 5,
           bufferInterval: roadmap.bufferInterval || 0,
           startDayNumber: lastPastDayNumber + 1,
           startDate: today,
@@ -256,7 +247,7 @@ async function getRoadmap(req, res) {
         const role = await Role.findById(roadmap.targetRoleId);
         if (role) {
           const gapTopics = role.topics.filter(t => roadmap.gapTopicIds.includes(t.id));
-          const completedChunkMap = buildCompletedChunkMap(roadmap);
+          const { completedChunkMap, remainingMinutesMap } = buildProgressMaps(roadmap.days, gapTopics);
           const lastDay = roadmap.days[roadmap.days.length - 1];
           const nextDate = new Date(lastDay.date);
           nextDate.setDate(nextDate.getDate() + 1);
@@ -264,7 +255,9 @@ async function getRoadmap(req, res) {
           const { days } = generateNextWindow({
             gapTopics,
             completedChunkMap,
+            remainingMinutesMap,
             hoursPerDay: roadmap.hoursPerDay,
+            daysPerWeek: roadmap.daysPerWeek || 5,
             bufferInterval: roadmap.bufferInterval || 0,
             startDayNumber: lastDay.dayNumber + 1,
             startDate: nextDate.toISOString().split('T')[0],
@@ -332,7 +325,6 @@ module.exports = {
   // exported for testing
   splitPastAndFuture,
   hasIncompletePastTask,
-  buildCompletedChunkMap,
   buildTaskFromChunk,
   generateTaskWordingForDay,
 };
