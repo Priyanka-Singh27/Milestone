@@ -94,14 +94,17 @@ const MOCK_RESPONSES = {
     ],
   }),
   quiz: JSON.stringify({
-    questions: [
-      {
-        id: 'q1',
-        question: '[MOCK] Sample question — replace once a real provider is configured.',
-        options: ['Option A', 'Option B', 'Option C', 'Option D'],
-        correctOptionIndex: 0,
-      },
-    ],
+    questions: Array.from({ length: 15 }, (_, i) => ({
+      id: `q${i + 1}`,
+      question: `[MOCK] Sample Question ${i + 1} — replace once a real provider is configured.`,
+      options: [
+        `Option A for Q${i + 1}`,
+        `Option B for Q${i + 1}`,
+        `Option C for Q${i + 1}`,
+        `Option D for Q${i + 1}`,
+      ],
+      correctOptionIndex: (i % 4),
+    })),
   }),
   generic: JSON.stringify({ note: '[MOCK] llm.service is running in mock mode. Set LLM_PROVIDER in .env to use a real provider.' }),
 };

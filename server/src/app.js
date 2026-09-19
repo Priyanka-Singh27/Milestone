@@ -16,4 +16,8 @@ app.use('/api/v1/roles', require('./routes/roles.routes'));
 app.use('/api/v1/roadmap', require('./routes/roadmap.routes'));
 app.use('/api/v1/skills', require('./routes/skills.routes'));
 
+// Person B's routes:
+app.use('/api/v1/quiz', require('./routes/quiz.routes'));
+app.use('/api/v1/fundamentals', require('./routes/fundamentals.routes'));
+
 module.exports = app;
