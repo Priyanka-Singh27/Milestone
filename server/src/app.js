@@ -79,4 +79,8 @@ app.use((req, res) => {
 // ── Central error handler ─────────────────────────────────────────────────────
 app.use(errorHandler);
 
+// Person B's routes:
+app.use('/api/v1/quiz', require('./routes/quiz.routes'));
+app.use('/api/v1/fundamentals', require('./routes/fundamentals.routes'));
+
 module.exports = app;
