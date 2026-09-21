@@ -16,6 +16,9 @@ app.use('/api/v1/roles', require('./routes/roles.routes'));
 // app.use('/api/v1/roadmap', require('./routes/roadmap.routes'));
 app.use('/api/v1/skills', require('./routes/skills.routes'));
 
-module.exports = app;
+
 
 app.use('/api/v1/applications', require('./routes/applications.routes'));
+app.use('/api/v1/certificates', require('./routes/certificates.routes'));
+
+module.exports = app;
