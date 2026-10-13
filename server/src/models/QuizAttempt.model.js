@@ -35,3 +35,4 @@ const quizAttemptSchema = new mongoose.Schema({
 quizAttemptSchema.index({ userId: 1, topicId: 1, attemptedAt: -1 });
 
 module.exports = mongoose.model('QuizAttempt', quizAttemptSchema);
+
