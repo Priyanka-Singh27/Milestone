@@ -16,9 +16,10 @@ app.use('/api/v1/roles', require('./routes/roles.routes'));
 // app.use('/api/v1/roadmap', require('./routes/roadmap.routes'));
 app.use('/api/v1/skills', require('./routes/skills.routes'));
 
-
-
 app.use('/api/v1/applications', require('./routes/applications.routes'));
 app.use('/api/v1/certificates', require('./routes/certificates.routes'));
+
+const errorHandler = require('./middleware/errorHandler.middleware');
+app.use(errorHandler); // must be the final app.use() call
 
 module.exports = app;
