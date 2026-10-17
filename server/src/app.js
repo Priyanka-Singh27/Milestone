@@ -1,25 +1,82 @@
-const express = require('express');
-const cors = require('cors');
+// server/src/app.js
+//
+// Express application factory.
+// Mounts all route modules and middleware. Does NOT connect to the database
+// (that happens in server.js so tests can swap in mongodb-memory-server).
+
+const express      = require('express');
+const cors         = require('cors');
+const errorHandler = require('./middleware/errorHandler.middleware');
+const { authenticate } = require('./middleware/auth.middleware');
 
 const app = express();
 
-app.use(cors());
-app.use(express.json());
+// ── CORS ──────────────────────────────────────────────────────────────────────
+// FRONTEND_URL can be comma-separated for multi-origin (e.g. localhost + Vercel).
+const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3000')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
 
-// Health check — confirms the server itself is running
+app.use(cors({
+  origin: (origin, cb) => {
+    // Allow requests with no Origin (e.g. curl, Postman, server-to-server)
+    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+    return cb(new Error(`CORS: origin ${origin} not allowed`));
+  },
+  credentials: true,
+}));
+
+// ── Body parsing ─────────────────────────────────────────────────────────────
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+
+// ── Health check ─────────────────────────────────────────────────────────────
 app.get('/api/v1/health', (req, res) => {
   res.json({ success: true, data: { status: 'ok' } });
 });
 
-// Person A's routes will be registered here, e.g.:
-app.use('/api/v1/roles', require('./routes/roles.routes'));
-// app.use('/api/v1/roadmap', require('./routes/roadmap.routes'));
-app.use('/api/v1/skills', require('./routes/skills.routes'));
+// ── Person D routes (always present) ─────────────────────────────────────────
+app.use('/api/v1/auth',      require('./routes/auth.routes'));
+app.use('/api/v1/profile',   require('./routes/profile.routes'));
+app.use('/api/v1/dashboard', require('./routes/dashboard.routes'));
 
-app.use('/api/v1/applications', require('./routes/applications.routes'));
-app.use('/api/v1/certificates', require('./routes/certificates.routes'));
+// ── Person A routes (present in this branch) ─────────────────────────────────
+// TODO(integration phase): wrap in requireAuth once auth middleware is retrofitted
+// across all modules and the dev-user-1 placeholder is removed.
+app.use('/api/v1/roles',   require('./routes/roles.routes'));
+app.use('/api/v1/roadmap', require('./routes/roadmap.routes'));
+app.use('/api/v1/skills',  require('./routes/skills.routes'));
 
-const errorHandler = require('./middleware/errorHandler.middleware');
-app.use(errorHandler); // must be the final app.use() call
+function mountOptionalRoute(prefix, routePath, label) {
+  try {
+    const router = require(routePath);
+    if (typeof router === 'function' || (router && typeof router.use === 'function')) {
+      app.use(prefix, router);
+    } else {
+      // Empty placeholder file from unmerged branch
+    }
+  } catch (e) {
+    if (e.code !== 'MODULE_NOT_FOUND') {
+      throw e;
+    }
+  }
+}
+
+// ── Person B routes (not yet merged — skip gracefully if missing or empty) ────
+mountOptionalRoute('/api/v1/quiz', './routes/quiz.routes', 'quiz');
+mountOptionalRoute('/api/v1/fundamentals', './routes/fundamentals.routes', 'fundamentals');
+
+// ── Person C routes (not yet merged — skip gracefully if missing or empty) ────
+mountOptionalRoute('/api/v1/applications', './routes/applications.routes', 'applications');
+mountOptionalRoute('/api/v1/certificates', './routes/certificates.routes', 'certificates');
+
+// ── 404 handler (JSON, not HTML) ──────────────────────────────────────────────
+app.use((req, res) => {
+  res.status(404).json({ success: false, error: { code: 'ROUTE_NOT_FOUND', message: `Cannot ${req.method} ${req.path}` } });
+});
+
+// ── Central error handler ─────────────────────────────────────────────────────
+app.use(errorHandler);
 
 module.exports = app;

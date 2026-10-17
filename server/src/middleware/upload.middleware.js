@@ -1,21 +1,26 @@
+// server/src/middleware/upload.middleware.js
+
 const multer = require('multer');
 
-const storage = multer.memoryStorage();
+const ALLOWED_MIME_TYPES = [
+  'application/pdf',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+];
 
-const ALLOWED_MIME_TYPES = ['application/pdf', 'image/jpeg', 'image/png'];
+const storage = multer.memoryStorage(); // keep the file in memory (req.file.buffer) — we never write it to disk
 
 const fileFilter = (req, file, cb) => {
   if (ALLOWED_MIME_TYPES.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error('INVALID_FILE_TYPE'));
+    cb(new Error('Only PDF and DOCX files are supported for resume upload.'));
   }
 };
 
 const upload = multer({
   storage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB cap
   fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB cap
 });
 
 module.exports = upload;

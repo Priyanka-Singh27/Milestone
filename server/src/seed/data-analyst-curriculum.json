@@ -62,14 +62,17 @@
         "source": "interview-questions",
         "practicePrompt": "Explain to a peer why a query filtering on an indexed column is faster than one filtering on a non-indexed column, without going into B-tree internals."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "sql-fundamentals",
     "name": "SQL Fundamentals (Querying & Filtering)",
     "track": "Tools/Libraries",
     "priority": "core",
-    "prerequisiteTopicIds": ["dbms-fundamentals"],
+    "prerequisiteTopicIds": [
+      "dbms-fundamentals"
+    ],
     "outline": [
       {
         "point": "Categories of SQL commands: DDL, DML, DCL, TCL",
@@ -127,14 +130,17 @@
         "source": "interview-questions",
         "practicePrompt": "Explain the difference between DELETE, TRUNCATE, and DROP, including which ones can be rolled back."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "sql-joins-window-functions",
     "name": "SQL Joins, Subqueries, CTEs & Window Functions",
     "track": "Tools/Libraries",
     "priority": "core",
-    "prerequisiteTopicIds": ["sql-fundamentals"],
+    "prerequisiteTopicIds": [
+      "sql-fundamentals"
+    ],
     "outline": [
       {
         "point": "INNER JOIN, LEFT/RIGHT JOIN, FULL OUTER JOIN — combining rows from multiple tables",
@@ -199,7 +205,8 @@
         "source": "interview-questions",
         "practicePrompt": "Write a query that returns the top 3 highest-paid employees in each department using ROW_NUMBER() inside a CTE."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "ms-excel",
@@ -271,7 +278,8 @@
         "source": "interview-questions",
         "practicePrompt": "Explain in your own words what a macro is and give one repetitive Excel task you would automate with one."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "python-fundamentals",
@@ -322,14 +330,17 @@
         "source": "interview-questions",
         "practicePrompt": "Explain why you can modify a list in place but not a tuple, then rewrite a for-loop that builds a list of squares as a one-line list comprehension."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "numpy",
     "name": "NumPy",
     "track": "Tools/Libraries",
     "priority": "core",
-    "prerequisiteTopicIds": ["python-fundamentals"],
+    "prerequisiteTopicIds": [
+      "python-fundamentals"
+    ],
     "outline": [
       {
         "point": "What NumPy is and why arrays are faster than plain Python lists for numeric work",
@@ -380,14 +391,17 @@
         "source": "interview-questions",
         "practicePrompt": "Explain the key differences between a NumPy array and a Python list, then write a boolean mask that filters an array to keep only values greater than 10."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "pandas",
     "name": "Pandas",
     "track": "Tools/Libraries",
     "priority": "core",
-    "prerequisiteTopicIds": ["numpy"],
+    "prerequisiteTopicIds": [
+      "numpy"
+    ],
     "outline": [
       {
         "point": "Series and DataFrame: the two core Pandas data structures",
@@ -445,14 +459,18 @@
         "source": "interview-questions",
         "practicePrompt": "Use .apply() with a lambda function to create a new column that categorizes a numeric column into 'Low'/'Medium'/'High'."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "data-cleaning-eda",
     "name": "Data Cleaning & Exploratory Data Analysis (EDA)",
     "track": "Tools/Libraries",
     "priority": "core",
-    "prerequisiteTopicIds": ["pandas", "sql-fundamentals"],
+    "prerequisiteTopicIds": [
+      "pandas",
+      "sql-fundamentals"
+    ],
     "outline": [
       {
         "point": "The data analysis workflow: collect, clean, explore, analyze, communicate",
@@ -503,7 +521,8 @@
         "source": "interview-questions",
         "practicePrompt": "Practice narrating, in under 2 minutes, how you would approach EDA on a brand-new sales dataset handed to you in an interview."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "statistics-probability",
@@ -575,14 +594,18 @@
         "source": "interview-questions",
         "practicePrompt": "Given a regression output with a coefficient of 2.5 for 'advertising spend', explain in plain language what that coefficient means."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "power-bi",
     "name": "Power BI",
     "track": "Tools/Libraries",
     "priority": "core",
-    "prerequisiteTopicIds": ["ms-excel", "sql-fundamentals"],
+    "prerequisiteTopicIds": [
+      "ms-excel",
+      "sql-fundamentals"
+    ],
     "outline": [
       {
         "point": "Power BI ecosystem overview: Power BI Desktop vs Power BI Service vs Power BI Mobile",
@@ -647,14 +670,17 @@
         "source": "interview-questions",
         "practicePrompt": "Explain out loud, in 3-4 sentences, the key differences between Power BI and Tableau, and between Power Query and Power Pivot."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "tableau",
     "name": "Tableau",
     "track": "Tools/Libraries",
     "priority": "core",
-    "prerequisiteTopicIds": ["sql-fundamentals"],
+    "prerequisiteTopicIds": [
+      "sql-fundamentals"
+    ],
     "outline": [
       {
         "point": "Tableau interface basics: connecting to data, dimensions vs measures",
@@ -719,14 +745,18 @@
         "source": "interview-questions",
         "practicePrompt": "Explain the difference between a live connection and an extract in Tableau, and decide which you'd use for a large, frequently-updated dataset."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "data-modeling-warehousing",
     "name": "Data Modeling & Data Warehousing Concepts",
     "track": "Core CS",
     "priority": "supplementary",
-    "prerequisiteTopicIds": ["dbms-fundamentals", "sql-joins-window-functions"],
+    "prerequisiteTopicIds": [
+      "dbms-fundamentals",
+      "sql-joins-window-functions"
+    ],
     "outline": [
       {
         "point": "What a data warehouse is and how it differs from an operational (OLTP) database",
@@ -770,7 +800,8 @@
         "source": "interview-questions",
         "practicePrompt": "Explain the difference between a Type 1 and Type 2 slowly changing dimension using a customer 'address change' example."
       }
-    ]
+    ],
+    "quizEligible": true
   },
   {
     "id": "quant-logical-aptitude",
@@ -828,14 +859,17 @@
         "source": "interview-questions",
         "practicePrompt": "Take one 20-minute mock aptitude section and afterward write down which question types you should skip-and-return-to next time to save time."
       }
-    ]
+    ],
+    "quizEligible": false
   },
   {
     "id": "dsa-basics-arrays-strings-hashing",
     "name": "Basic DSA for Data Analyst Interviews (Arrays, Strings & Hashing)",
     "track": "DSA",
     "priority": "supplementary",
-    "prerequisiteTopicIds": ["python-fundamentals"],
+    "prerequisiteTopicIds": [
+      "python-fundamentals"
+    ],
     "outline": [
       {
         "point": "What arrays and strings are, and basic traversal (looping through elements)",
@@ -879,6 +913,7 @@
         "source": "interview-questions",
         "practicePrompt": "Solve 3 easy array/string problems (frequency count, two-sum style, reverse a string) on paper first, then verify by running the code."
       }
-    ]
+    ],
+    "quizEligible": true
   }
 ]

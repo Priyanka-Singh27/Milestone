@@ -1,33 +1,36 @@
-// Catches errors thrown by any middleware/route — including Multer's
-// file-size/type errors, which occur before a controller's own try/catch
-// can run — and always responds in the standard { success, error } shape,
-// never a raw HTML stack trace. Must be registered LAST in app.js, after
-// every route.
-const multer = require('multer');
+// server/src/middleware/errorHandler.middleware.js
+//
+// Central Express error handler — mounted last in app.js.
+// Catches errors thrown or passed via next(err) from any route.
+//
+// Special cases handled:
+//   - multer LIMIT_FILE_SIZE  -> 400 FILE_TOO_LARGE
+//   - MongoServerError code 11000 (duplicate key) -> 409 to avoid leaking
+//     internals (callers should catch EMAIL_TAKEN before this fires)
+//   - All others -> 500 SERVER_ERROR
 
-const errorHandler = (err, req, res, next) => {
-  if (err instanceof multer.MulterError) {
-    let message = 'File upload error.';
-    if (err.code === 'LIMIT_FILE_SIZE') message = 'File is too large (max 10MB).';
-    if (err.code === 'LIMIT_UNEXPECTED_FILE') message = 'Unexpected file field.';
-    return res.status(400).json({
-      success: false,
-      error: { code: 'UPLOAD_ERROR', message },
-    });
+const { fail } = require('../utils/respond');
+
+function errorHandler(err, req, res, next) { // eslint-disable-line no-unused-vars
+  // multer file-size limit
+  if (err.code === 'LIMIT_FILE_SIZE') {
+    return fail(res, 400, 'FILE_TOO_LARGE', 'Uploaded file exceeds the size limit.');
   }
 
-  if (err && err.message === 'INVALID_FILE_TYPE') {
-    return res.status(400).json({
-      success: false,
-      error: { code: 'INVALID_FILE_TYPE', message: 'Unsupported file type. Allowed: PDF, JPG, PNG.' },
-    });
+  // Mongoose duplicate-key (e.g. race condition on email)
+  if (err.name === 'MongoServerError' && err.code === 11000) {
+    return fail(res, 409, 'CONFLICT', 'A resource with that value already exists.');
   }
 
-  console.error('Unhandled error:', err);
-  res.status(500).json({
-    success: false,
-    error: { code: 'SERVER_ERROR', message: err.message || 'Something went wrong.' },
-  });
-};
+  // Mongoose validation error
+  if (err.name === 'ValidationError') {
+    const message = Object.values(err.errors).map((e) => e.message).join('; ');
+    return fail(res, 400, 'VALIDATION_ERROR', message);
+  }
+
+  // Everything else
+  console.error('[errorHandler]', err);
+  return fail(res, 500, 'SERVER_ERROR', 'An unexpected error occurred.');
+}
 
 module.exports = errorHandler;
