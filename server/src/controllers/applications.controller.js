@@ -60,7 +60,7 @@ const updateApplication = async (req, res) => {
     delete updates.userId; // don't allow reassigning ownership via patch
  
     const application = await Application.findByIdAndUpdate(id, updates, {
-      new: true,
+      returnDocument: 'after',
       runValidators: true,
     });
  
