@@ -7,7 +7,6 @@
 const express      = require('express');
 const cors         = require('cors');
 const errorHandler = require('./middleware/errorHandler.middleware');
-const { authenticate } = require('./middleware/auth.middleware');
 
 const app = express();
 
@@ -48,28 +47,15 @@ app.use('/api/v1/roles',   require('./routes/roles.routes'));
 app.use('/api/v1/roadmap', require('./routes/roadmap.routes'));
 app.use('/api/v1/skills',  require('./routes/skills.routes'));
 
-function mountOptionalRoute(prefix, routePath, label) {
-  try {
-    const router = require(routePath);
-    if (typeof router === 'function' || (router && typeof router.use === 'function')) {
-      app.use(prefix, router);
-    } else {
-      // Empty placeholder file from unmerged branch
-    }
-  } catch (e) {
-    if (e.code !== 'MODULE_NOT_FOUND') {
-      throw e;
-    }
-  }
-}
 
-// ── Person B routes (not yet merged — skip gracefully if missing or empty) ────
-mountOptionalRoute('/api/v1/quiz', './routes/quiz.routes', 'quiz');
-mountOptionalRoute('/api/v1/fundamentals', './routes/fundamentals.routes', 'fundamentals');
 
-// ── Person C routes (not yet merged — skip gracefully if missing or empty) ────
-mountOptionalRoute('/api/v1/applications', './routes/applications.routes', 'applications');
-mountOptionalRoute('/api/v1/certificates', './routes/certificates.routes', 'certificates');
+// ── Person B routes ──────────────────────────────────────────────────────────
+app.use('/api/v1/quiz',         require('./routes/quiz.routes'));
+app.use('/api/v1/fundamentals', require('./routes/fundamentals.routes'));
+
+// ── Person C routes ──────────────────────────────────────────────────────────
+app.use('/api/v1/applications', require('./routes/applications.routes'));
+app.use('/api/v1/certificates', require('./routes/certificates.routes'));
 
 // ── 404 handler (JSON, not HTML) ──────────────────────────────────────────────
 app.use((req, res) => {
@@ -78,9 +64,5 @@ app.use((req, res) => {
 
 // ── Central error handler ─────────────────────────────────────────────────────
 app.use(errorHandler);
-
-// Person B's routes:
-app.use('/api/v1/quiz', require('./routes/quiz.routes'));
-app.use('/api/v1/fundamentals', require('./routes/fundamentals.routes'));
 
 module.exports = app;

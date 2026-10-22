@@ -11,7 +11,7 @@ const {
  */
 async function getFundamentals(req, res) {
   try {
-    const userId = req.user?.userId || req.query.userId || 'dev-user-1';
+    const userId = req.user.userId;
     const result = await getFundamentalsCurriculum(userId);
 
     return res.status(200).json({
@@ -38,7 +38,7 @@ async function updateFundamentalsTask(req, res) {
   try {
     const { topicId } = req.params;
     const { status } = req.body;
-    const userId = req.user?.userId || req.body.userId || 'dev-user-1';
+    const userId = req.user.userId;
 
     if (!status) {
       return res.status(400).json({

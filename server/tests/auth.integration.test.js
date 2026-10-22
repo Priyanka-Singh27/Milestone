@@ -700,7 +700,7 @@ describe('Module D integration tests', () => {
 
   // ── Route boot test ───────────────────────────────────────────────────────
 
-  it('16. app.js boots with only A + D route files present', () => {
+  it('16. app.js boots cleanly with all route modules present', () => {
     const app = require('../src/app');
     assert.ok(app, 'app should be defined');
     assert.equal(typeof app.handle, 'function', 'app should be a valid express instance');

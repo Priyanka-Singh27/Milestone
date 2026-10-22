@@ -15,11 +15,7 @@ const {
 async function generateQuiz(req, res) {
   try {
     const { topicId } = req.params;
-    const userId =
-      req.user?.userId ||
-      req.body?.userId ||
-      req.query?.userId ||
-      'dev-user-1';
+    const userId = req.user.userId;
 
     const roleId = req.body?.roleId || req.query?.roleId;
     const roleName =
@@ -78,10 +74,7 @@ async function submitQuiz(req, res) {
   try {
     const { quizId, topicId, answers } = req.body;
 
-    const userId =
-      req.user?.userId ||
-      req.body.userId ||
-      'dev-user-1';
+    const userId = req.user.userId;
 
     const result = await submitQuizAttempt({
       userId,
@@ -123,10 +116,7 @@ async function checkQuizAvailability(req, res) {
   try {
     const { topicId } = req.params;
 
-    const userId =
-      req.user?.userId ||
-      req.query.userId ||
-      'dev-user-1';
+    const userId = req.user.userId;
 
     const isComplete = await isTopicFullyCompleted(userId, topicId);
 
