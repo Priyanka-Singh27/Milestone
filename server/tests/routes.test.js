@@ -1,12 +1,18 @@
-// server/tests/routes.test.js
-
 const { test, describe, before, after } = require('node:test');
 const assert = require('node:assert/strict');
 const http = require('http');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 
 // Disable Mongoose buffering so unmocked operations fail fast rather than hanging 10s
 mongoose.set('bufferCommands', false);
+
+const TEST_SECRET = 'routes-test-secret';
+process.env.JWT_SECRET = process.env.JWT_SECRET || TEST_SECRET;
+const authToken = jwt.sign(
+  { userId: 'dev-user-1', email: 'dev-user-1@test.com' },
+  process.env.JWT_SECRET
+);
 
 const app = require('../src/app');
 const Quiz = require('../src/models/Quiz.model');
@@ -15,6 +21,14 @@ const Role = require('../src/models/Role.model');
 const Roadmap = require('../src/models/Roadmap.model');
 const { FundamentalsTopic, FundamentalsProgress } = require('../src/models/Fundamentals.model');
 const { DEFAULT_CURRICULUM } = require('../src/services/fundamentals.service');
+
+function authFetch(url, options = {}) {
+  const headers = {
+    ...options.headers,
+    Authorization: `Bearer ${authToken}`,
+  };
+  return fetch(url, { ...options, headers });
+}
 
 describe('Person B HTTP Routes Integration Tests', () => {
   let server;
@@ -40,6 +54,16 @@ describe('Person B HTTP Routes Integration Tests', () => {
   });
 
   describe('POST /api/v1/quiz/generate/:topicId', () => {
+    test('returns 401 NO_TOKEN when authorization header is missing', async () => {
+      const res = await fetch(`${baseUrl}/api/v1/quiz/generate/dbms-fundamentals`, {
+        method: 'POST',
+      });
+      const body = await res.json();
+      assert.strictEqual(res.status, 401);
+      assert.strictEqual(body.success, false);
+      assert.strictEqual(body.error.code, 'NO_TOKEN');
+    });
+
     test('returns 200 with standard { success: true, data: { quiz } } shape when topic is cached', async () => {
       const origQuizFindOne = Quiz.findOne;
       const origRoleFindOne = Role.findOne;
@@ -72,7 +96,7 @@ describe('Person B HTTP Routes Integration Tests', () => {
         }),
       });
 
-      const res = await fetch(`${baseUrl}/api/v1/quiz/generate/dbms-fundamentals`, {
+      const res = await authFetch(`${baseUrl}/api/v1/quiz/generate/dbms-fundamentals`, {
         method: 'POST',
       });
       const body = await res.json();
@@ -103,7 +127,7 @@ describe('Person B HTTP Routes Integration Tests', () => {
         }),
       });
 
-      const res = await fetch(`${baseUrl}/api/v1/quiz/generate/git-version-control`, {
+      const res = await authFetch(`${baseUrl}/api/v1/quiz/generate/git-version-control`, {
         method: 'POST',
       });
       const body = await res.json();
@@ -126,7 +150,7 @@ describe('Person B HTTP Routes Integration Tests', () => {
       Role.findOne = () => ({ lean: async () => null });
       Role.find = () => ({ lean: async () => [] });
 
-      const res = await fetch(`${baseUrl}/api/v1/quiz/generate/non-existent-topic-404`, {
+      const res = await authFetch(`${baseUrl}/api/v1/quiz/generate/non-existent-topic-404`, {
         method: 'POST',
       });
       const body = await res.json();
@@ -181,7 +205,7 @@ describe('Person B HTTP Routes Integration Tests', () => {
         toObject: () => ({ _id: 'attempt-test-1', ...doc }),
       });
 
-      const res = await fetch(`${baseUrl}/api/v1/quiz/submit`, {
+      const res = await authFetch(`${baseUrl}/api/v1/quiz/submit`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -215,7 +239,7 @@ describe('Person B HTTP Routes Integration Tests', () => {
         }),
       });
 
-      const res = await fetch(`${baseUrl}/api/v1/quiz/submit`, {
+      const res = await authFetch(`${baseUrl}/api/v1/quiz/submit`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -236,6 +260,14 @@ describe('Person B HTTP Routes Integration Tests', () => {
   });
 
   describe('GET /api/v1/fundamentals', () => {
+    test('returns 401 NO_TOKEN when authorization header is missing', async () => {
+      const res = await fetch(`${baseUrl}/api/v1/fundamentals`);
+      const body = await res.json();
+      assert.strictEqual(res.status, 401);
+      assert.strictEqual(body.success, false);
+      assert.strictEqual(body.error.code, 'NO_TOKEN');
+    });
+
     test('returns 200 with all 5 areas and user progress', async () => {
       const origTopicFind = FundamentalsTopic.find;
       const origProgressFind = FundamentalsProgress.find;
@@ -250,7 +282,7 @@ describe('Person B HTTP Routes Integration Tests', () => {
         ],
       });
 
-      const res = await fetch(`${baseUrl}/api/v1/fundamentals?userId=dev-user-1`);
+      const res = await authFetch(`${baseUrl}/api/v1/fundamentals`);
       const body = await res.json();
 
       assert.strictEqual(res.status, 200);
@@ -275,7 +307,7 @@ describe('Person B HTTP Routes Integration Tests', () => {
         status: update.status,
       });
 
-      const res = await fetch(`${baseUrl}/api/v1/fundamentals/task/dsa-arrays-strings`, {
+      const res = await authFetch(`${baseUrl}/api/v1/fundamentals/task/dsa-arrays-strings`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -294,7 +326,7 @@ describe('Person B HTTP Routes Integration Tests', () => {
     });
 
     test('returns 400 on invalid status', async () => {
-      const res = await fetch(`${baseUrl}/api/v1/fundamentals/task/dsa-arrays-strings`, {
+      const res = await authFetch(`${baseUrl}/api/v1/fundamentals/task/dsa-arrays-strings`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
