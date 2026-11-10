@@ -1,114 +1,204 @@
 // server/src/services/llm.service.js
 //
-// PROVIDER-AGNOSTIC LLM WRAPPER.
-// No other file in this codebase should import an LLM provider SDK directly
-// (no `require('@anthropic-ai/sdk')`, no `require('groq-sdk')` outside this
-// file). Everything routes through callLLM() below, which picks the actual
-// provider based on the LLM_PROVIDER environment variable. This means
-// switching providers later is a one-file change, not a codebase-wide one.
+// Provider-agnostic LLM wrapper.
+// Provider SDKs should only be imported inside this file.
 //
-// MOCK MODE: if LLM_PROVIDER is unset (or set to "mock"), this returns a
-// canned, structurally-valid response instead of calling a real API — so
-// resume parsing, task-wording, and quiz generation can all be built and
-// tested end-to-end before the team finalizes which provider to use.
+// MOCK MODE:
+// If LLM_PROVIDER is unset or set to "mock", canned responses are returned
+// so that features can be tested without a real API key.
 
 const PROVIDER = (process.env.LLM_PROVIDER || 'mock').toLowerCase();
 
-// ---------------------------------------------------------------------------
-// Low-level entry point. Every feature-level helper (resume parsing, task
-// wording, quiz generation) should call this, not a provider SDK directly.
-//
-// @param {string} system - system prompt / instructions
-// @param {string} prompt - the actual user-turn content
-// @param {string} mockKind - which canned mock response to return in mock
-//   mode (see MOCK_RESPONSES below) — ignored for real providers
-// @returns {Promise<string>} raw text response from the model (the caller
-//   is responsible for JSON.parse-ing it if a structured response was asked for)
-// ---------------------------------------------------------------------------
-async function callLLM({ system, prompt, mockKind = 'generic' }) {
+/**
+ * Calls the configured LLM provider.
+ *
+ * @param {string} system - System prompt and instructions.
+ * @param {string} prompt - User-turn content.
+ * @param {string} mockKind - Which canned response to return in mock mode.
+ * @param {number} temperature - Optional generation temperature.
+ * @returns {Promise<string>} Raw model response.
+ */
+async function callLLM({
+  system,
+  prompt,
+  mockKind = 'generic',
+  temperature,
+}) {
   switch (PROVIDER) {
     case 'anthropic':
-      return callAnthropic({ system, prompt });
+      return callAnthropic({
+        system,
+        prompt,
+      });
+
     case 'groq':
-      return callGroq({ system, prompt });
+      return callGroq({
+        system,
+        prompt,
+        temperature,
+      });
+
     case 'mock':
     default:
-      return callMock({ system, prompt, mockKind });
+      return callMock({
+        system,
+        prompt,
+        mockKind,
+      });
   }
 }
 
-// ---------------------------------------------------------------------------
-// Anthropic implementation — TODO: fill in once the team confirms this
-// provider. Requires `npm install @anthropic-ai/sdk` and ANTHROPIC_API_KEY
-// (or whatever LLM_API_KEY maps to) set in the environment.
-// ---------------------------------------------------------------------------
+/**
+ * Anthropic implementation.
+ *
+ * This provider is intentionally not implemented in the current codebase.
+ * Use LLM_PROVIDER=mock for development or implement this function when
+ * the team decides to configure Anthropic.
+ */
 async function callAnthropic({ system, prompt }) {
+  // Example implementation, when the team is ready:
+  //
   // const Anthropic = require('@anthropic-ai/sdk');
-  // const client = new Anthropic({ apiKey: process.env.LLM_API_KEY });
+  // const client = new Anthropic({
+  //   apiKey: process.env.LLM_API_KEY,
+  // });
+  //
   // const response = await client.messages.create({
   //   model: 'claude-sonnet-4-6',
   //   max_tokens: 2000,
   //   system,
-  //   messages: [{ role: 'user', content: prompt }],
+  //   messages: [
+  //     {
+  //       role: 'user',
+  //       content: prompt,
+  //     },
+  //   ],
   // });
-  // return response.content.map(block => block.text || '').join('\n');
-  throw new Error('Anthropic provider not yet implemented — set LLM_PROVIDER=mock for development, or fill in callAnthropic().');
+  //
+  // return response.content
+  //   .map((block) => block.text || '')
+  //   .join('\n');
+
+  throw new Error(
+    'Anthropic provider not yet implemented. ' +
+      'Set LLM_PROVIDER=mock for development, or implement callAnthropic().'
+  );
 }
 
-// ---------------------------------------------------------------------------
-// Groq implementation — TODO: fill in once the team confirms this provider.
-// Requires `npm install groq-sdk` and LLM_API_KEY set.
-// ---------------------------------------------------------------------------
-async function callGroq({ system, prompt }) {
+/**
+ * Groq implementation.
+ * Requires the groq-sdk package and LLM_API_KEY in the environment.
+ */
+async function callGroq({ system, prompt, temperature }) {
   const Groq = require('groq-sdk');
-  const client = new Groq({ apiKey: process.env.LLM_API_KEY });
-  const response = await client.chat.completions.create({
-    model: 'openai/gpt-oss-120b',
-    messages: [
-      { role: 'system', content: system },
-      { role: 'user', content: prompt },
-    ],
-    response_format: { type: 'json_object' }, // every system prompt in this codebase asks for JSON explicitly, which this requires
+
+  const client = new Groq({
+    apiKey: process.env.LLM_API_KEY,
   });
+
+  const request = {
+    model: 'openai/gpt-oss-120b',
+
+    messages: [
+      {
+        role: 'system',
+        content: system,
+      },
+      {
+        role: 'user',
+        content: prompt,
+      },
+    ],
+
+    response_format: {
+      type: 'json_object',
+    },
+  };
+
+  // Only include temperature when the caller explicitly provides it.
+  if (typeof temperature === 'number') {
+    request.temperature = temperature;
+  }
+
+  const response = await client.chat.completions.create(request);
+
   return response.choices[0].message.content;
 }
 
-// ---------------------------------------------------------------------------
-// Mock implementation — used automatically when LLM_PROVIDER is unset.
-// Returns structurally-valid canned JSON so downstream parsing code can be
-// built and tested without a real API key.
-// ---------------------------------------------------------------------------
+/**
+ * Canned mock responses used when LLM_PROVIDER=mock.
+ *
+ * These responses are for structural testing only.
+ * They are not intended to be used as real educational content.
+ */
 const MOCK_RESPONSES = {
   resumeSkills: JSON.stringify({
     skills: [
-      { topicId: 'python-fundamentals', name: 'Python', confidence: 'high' },
-      { topicId: 'sql-fundamentals', name: 'SQL', confidence: 'medium' },
+      {
+        topicId: 'python-fundamentals',
+        name: 'Python',
+        confidence: 'high',
+      },
+      {
+        topicId: 'sql-fundamentals',
+        name: 'SQL',
+        confidence: 'medium',
+      },
     ],
   }),
+
   dailyTasks: JSON.stringify({
     tasks: [
       {
         taskName: '[MOCK] Sample task for this subtopic',
-        description: '[MOCK] This is placeholder text from llm.service mock mode — replace once a real provider is configured.',
+        description:
+          '[MOCK] This is placeholder text from llm.service mock mode.',
       },
     ],
   }),
+
   quiz: JSON.stringify({
-    questions: [
-      {
-        id: 'q1',
-        question: '[MOCK] Sample question — replace once a real provider is configured.',
-        options: ['Option A', 'Option B', 'Option C', 'Option D'],
-        correctOptionIndex: 0,
-      },
-    ],
+    questions: Array.from({ length: 15 }, (_, i) => ({
+      id: `q${i + 1}`,
+
+      question:
+        `[MOCK] Sample Question ${i + 1} — ` +
+        'replace once a real provider is configured.',
+
+      options: [
+        `Option A for Q${i + 1}`,
+        `Option B for Q${i + 1}`,
+        `Option C for Q${i + 1}`,
+        `Option D for Q${i + 1}`,
+      ],
+
+      correctOptionIndex: i % 4,
+
+      explanation:
+        'This is a placeholder explanation for testing the quiz response structure.',
+    })),
   }),
-  generic: JSON.stringify({ note: '[MOCK] llm.service is running in mock mode. Set LLM_PROVIDER in .env to use a real provider.' }),
+
+  generic: JSON.stringify({
+    note:
+      '[MOCK] llm.service is running in mock mode. ' +
+      'Set LLM_PROVIDER in .env to use a real provider.',
+  }),
 };
 
+/**
+ * Returns the canned response for the requested feature.
+ */
 async function callMock({ system, prompt, mockKind }) {
-  console.warn(`[llm.service] LLM_PROVIDER not set — returning MOCK response (kind: "${mockKind}"). Set LLM_PROVIDER in your .env to use a real provider.`);
+  console.warn(
+    `[llm.service] LLM_PROVIDER is "${PROVIDER}". ` +
+      `Returning MOCK response (kind: "${mockKind}"). ` +
+      'Set LLM_PROVIDER in your .env to use a real provider.'
+  );
+
   return MOCK_RESPONSES[mockKind] || MOCK_RESPONSES.generic;
 }
 
-module.exports = { callLLM };
+module.exports = {
+  callLLM,
+};
