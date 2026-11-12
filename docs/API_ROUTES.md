@@ -70,8 +70,11 @@ All routes are prefixed `/api/v1/`. All responses follow the standard shape from
 | POST | `/api/v1/applications` | Adds a new application | Yes |
 | PATCH | `/api/v1/applications/:id` | Updates an application (status, notes, etc.) | Yes |
 | DELETE | `/api/v1/applications/:id` | Deletes an application | Yes |
-| POST | `/api/v1/applications/sync-sheets` | Exports/syncs the user's applications to their Google Sheet | Yes |
-| POST | `/api/v1/certificates/upload` | Uploads a course certificate file, saves it with its details | Yes |
+| GET | `/api/v1/applications/sheets/status` | Says whether the user has connected Google Sheets (`connected: true/false`) | Yes |
+| GET | `/api/v1/applications/sheets/connect` | Returns the Google consent link (`authUrl`); the frontend sends the user there the first time they use Sheets sync | Yes |
+| GET | `/api/v1/applications/sheets/callback` | Google redirects the browser here after consent and the token is saved. A browser redirect can't carry a login token, so this route must stay open (the user is identified by a signed `state` value) | No |
+| POST | `/api/v1/applications/sync-sheets` | Exports/syncs the user's applications to their Google Sheet. Needs Sheets connected first, otherwise returns `SHEETS_NOT_CONNECTED` (or `SHEETS_AUTH_EXPIRED` if access was revoked) | Yes |
+| POST | `/api/v1/certificates/upload` | Uploads a course certificate file (PDF, JPG or PNG, max 10MB), saves it with its details | Yes |
 | POST | `/api/v1/certificates/badge` | Creates a badge certificate after a quiz is passed — called internally by the Quiz system, not the frontend directly | Yes (internal) |
 | GET | `/api/v1/certificates` | Lists a user's certificates/badges (can filter by tag or type) | Yes |
 | DELETE | `/api/v1/certificates/:id` | Deletes an uploaded certificate (badges can't be deleted) | Yes |
