@@ -44,4 +44,8 @@ const roadmapSchema = new mongoose.Schema({
   days: [roadmapDaySchema],
 }, { timestamps: true });
 
+// One roadmap per user. If your database already holds duplicates, run
+// `node scripts/dedupeRoadmaps.js` once BEFORE deploying, or this index cannot build.
+roadmapSchema.index({ userId: 1 }, { unique: true });
+
 module.exports = mongoose.model('Roadmap', roadmapSchema);

@@ -1,68 +1,87 @@
 // server/src/app.js
 //
-// Express application factory.
-// Mounts all route modules and middleware. Does NOT connect to the database
-// (that happens in server.js so tests can swap in mongodb-memory-server).
+// Express application factory. Mounts all route modules and the security
+// middleware. Does NOT connect to the database (server.js does that, so tests
+// can swap in mongodb-memory-server).
 
-const express      = require('express');
-const cors         = require('cors');
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
 const errorHandler = require('./middleware/errorHandler.middleware');
+const { sanitizeBody, apiLimiter } = require('./middleware/security.middleware');
+const { origins } = require('./config/env');
 
 const app = express();
 
-// ── CORS ──────────────────────────────────────────────────────────────────────
-// FRONTEND_URL can be comma-separated for multi-origin (e.g. localhost + Vercel).
-const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3000')
-  .split(',')
-  .map((o) => o.trim())
-  .filter(Boolean);
+app.disable('x-powered-by');
+// Render / Vercel / most hosts sit behind one proxy. Needed for correct client
+// IPs (rate limiting) and secure cookies.
+app.set('trust proxy', 1);
 
-app.use(cors({
-  origin: (origin, cb) => {
-    // Allow requests with no Origin (e.g. curl, Postman, server-to-server)
-    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
-    return cb(new Error(`CORS: origin ${origin} not allowed`));
-  },
-  credentials: true,
-}));
+// ── Security headers ─────────────────────────────────────────────────────────
+app.use(
+  helmet({
+    // The API is called from another origin (the frontend), so let it be read.
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+  })
+);
+
+// ── CORS ─────────────────────────────────────────────────────────────────────
+// FRONTEND_URL may hold several comma-separated origins. A request from any
+// other browser origin is simply not given CORS headers (no 500 error).
+app.use(
+  cors({
+    origin: (origin, cb) => {
+      const allowed = origins();
+      if (!origin) return cb(null, true); // curl, Postman, server-to-server
+      return cb(null, allowed.includes(origin));
+    },
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    maxAge: 600,
+  })
+);
 
 // ── Body parsing ─────────────────────────────────────────────────────────────
-app.use(express.json({ limit: '1mb' }));
-app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+app.use(express.json({ limit: '200kb' }));
+app.use(express.urlencoded({ extended: false, limit: '200kb' }));
+app.use(sanitizeBody);
 
-// ── Health check ─────────────────────────────────────────────────────────────
+// ── Health check (no auth, no database) ──────────────────────────────────────
 app.get('/api/v1/health', (req, res) => {
   res.json({ success: true, data: { status: 'ok' } });
 });
 
-// ── Person D routes (always present) ─────────────────────────────────────────
-app.use('/api/v1/auth',      require('./routes/auth.routes'));
-app.use('/api/v1/profile',   require('./routes/profile.routes'));
+// ── Global rate limit ────────────────────────────────────────────────────────
+app.use('/api', apiLimiter);
+
+// ── Auth, profile, dashboard ─────────────────────────────────────────────────
+app.use('/api/v1/auth', require('./routes/auth.routes'));
+app.use('/api/v1/profile', require('./routes/profile.routes'));
 app.use('/api/v1/dashboard', require('./routes/dashboard.routes'));
 
-// ── Person A routes (present in this branch) ─────────────────────────────────
-// TODO(integration phase): wrap in requireAuth once auth middleware is retrofitted
-// across all modules and the dev-user-1 placeholder is removed.
-app.use('/api/v1/roles',   require('./routes/roles.routes'));
+// ── Roadmap engine ───────────────────────────────────────────────────────────
+// roles: public list. roadmap / skills: every route requires a login (see files).
+app.use('/api/v1/roles', require('./routes/roles.routes'));
 app.use('/api/v1/roadmap', require('./routes/roadmap.routes'));
-app.use('/api/v1/skills',  require('./routes/skills.routes'));
+app.use('/api/v1/skills', require('./routes/skills.routes'));
 
-
-
-// ── Person B routes ──────────────────────────────────────────────────────────
-app.use('/api/v1/quiz',         require('./routes/quiz.routes'));
+// ── Quiz + fundamentals ──────────────────────────────────────────────────────
+app.use('/api/v1/quiz', require('./routes/quiz.routes'));
 app.use('/api/v1/fundamentals', require('./routes/fundamentals.routes'));
 
-// ── Person C routes ──────────────────────────────────────────────────────────
+// ── Applications + certificates ──────────────────────────────────────────────
 app.use('/api/v1/applications', require('./routes/applications.routes'));
 app.use('/api/v1/certificates', require('./routes/certificates.routes'));
 
-// ── 404 handler (JSON, not HTML) ──────────────────────────────────────────────
+// ── 404 (JSON, not HTML) ─────────────────────────────────────────────────────
 app.use((req, res) => {
-  res.status(404).json({ success: false, error: { code: 'ROUTE_NOT_FOUND', message: `Cannot ${req.method} ${req.path}` } });
+  res.status(404).json({
+    success: false,
+    error: { code: 'ROUTE_NOT_FOUND', message: `Cannot ${req.method} ${req.path}` },
+  });
 });
 
-// ── Central error handler ─────────────────────────────────────────────────────
 app.use(errorHandler);
 
 module.exports = app;

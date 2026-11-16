@@ -5,6 +5,16 @@ const {
   submitQuizAttempt,
   isTopicFullyCompleted,
 } = require('../services/quiz.service');
+const { getQuizStatus, checkQuizAccess } = require('../services/quizGate.service');
+
+function sendBlocked(res, blocked) {
+  return res.status(blocked.statusCode).json({
+    success: false,
+    error: { code: blocked.code, message: blocked.message },
+    // handy for the UI: attempts left, cooldown end, etc.
+    data: { status: blocked.status },
+  });
+}
 
 /**
  * POST /api/v1/quiz/generate/:topicId
@@ -16,6 +26,10 @@ async function generateQuiz(req, res) {
   try {
     const { topicId } = req.params;
     const userId = req.user.userId;
+
+    // Block quizzes for unfinished topics / used-up attempts BEFORE spending an AI call.
+    const blocked = await checkQuizAccess(userId, topicId);
+    if (blocked) return sendBlocked(res, blocked);
 
     const roleId = req.body?.roleId || req.query?.roleId;
     const roleName =
@@ -75,6 +89,11 @@ async function submitQuiz(req, res) {
     const { quizId, topicId, answers } = req.body;
 
     const userId = req.user.userId;
+
+    if (typeof topicId === 'string') {
+      const blocked = await checkQuizAccess(userId, topicId);
+      if (blocked) return sendBlocked(res, blocked);
+    }
 
     const result = await submitQuizAttempt({
       userId,
@@ -138,7 +157,24 @@ async function checkQuizAvailability(req, res) {
   }
 }
 
+/**
+ * GET /api/v1/quiz/status/:topicId
+ * Everything the UI needs to decide what to show on a topic's quiz button.
+ */
+async function getQuizStatusHandler(req, res) {
+  try {
+    const status = await getQuizStatus(req.user.userId, req.params.topicId);
+    return res.status(200).json({ success: true, data: { status } });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      error: { code: 'SERVER_ERROR', message: 'An unexpected error occurred.' },
+    });
+  }
+}
+
 module.exports = {
+  getQuizStatusHandler,
   generateQuiz,
   submitQuiz,
   checkQuizAvailability,

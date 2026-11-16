@@ -42,7 +42,7 @@
 
 const { ok } = require('../utils/respond');
 
-const INTERNAL_API_URL = process.env.INTERNAL_API_URL || 'http://localhost:5000/api/v1';
+const { internalApiBase } = require('../utils/internalUrl');
 
 /**
  * Fetch a module endpoint with the caller's auth token forwarded.
@@ -55,7 +55,7 @@ const INTERNAL_API_URL = process.env.INTERNAL_API_URL || 'http://localhost:5000/
  */
 async function fetchModule(path, authHeader) {
   try {
-    const res = await fetch(`${INTERNAL_API_URL}${path}`, {
+    const res = await fetch(`${internalApiBase()}${path}`, {
       headers: { Authorization: authHeader },
     });
 
@@ -127,8 +127,12 @@ function parseRoadmap(data) {
     const progressPct = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
 
     // Phase from the first non-buffer day
-    const firstDay = activeDays[0];
-    const phase    = firstDay?.phase || null;
+    // The phase the student is in NOW: the first non-buffer day from today on
+    // (or the last one if the whole window is in the past).
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const currentDay =
+      activeDays.find((d) => d.date >= todayStr) || activeDays[activeDays.length - 1];
+    const phase    = currentDay?.phase || null;
 
     return {
       totalTasks:      totalTasks,

@@ -304,7 +304,7 @@ async function updateFundamentalsProgress({ userId = 'dev-user-1', topicId, stat
   const progress = await FundamentalsProgress.findOneAndUpdate(
     { userId, topicId },
     { status },
-    { new: true, upsert: true, setDefaultsOnInsert: true }
+    { returnDocument: 'after', upsert: true, setDefaultsOnInsert: true }
   );
 
   return progress;

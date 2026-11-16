@@ -3,11 +3,20 @@
 // the shared Atlas database. Mounts only Person C's two routers, so it does
 // not depend on the rest of app.js. Cloudinary is not called: only the
 // paths that fail before an upload happens are exercised here.
+process.env.NODE_ENV = 'test';
+process.env.JWT_SECRET = process.env.JWT_SECRET || 'personc-test-secret-0123456789abcdef';
+process.env.INTERNAL_API_KEY = process.env.INTERNAL_API_KEY || 'personc-internal-key-abcdef';
+
 const { test, before, after } = require('node:test');
 const assert = require('node:assert/strict');
 const express = require('express');
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
+const { signToken } = require('../src/utils/token');
+
+// Every Person C route now needs a login; the user comes from the token.
+const token = signToken({ userId: 'dev-user-1', email: 'dev@test.com' });
+const otherToken = signToken({ userId: 'someone-else', email: 'x@test.com' });
 
 let mongod;
 let server;
@@ -34,10 +43,14 @@ after(async () => {
   await mongod.stop();
 });
 
-const call = async (method, path, body) => {
+// opts.token overrides the default user; opts.internal sends the internal key instead.
+const call = async (method, path, body, opts = {}) => {
+  const headers = body ? { 'Content-Type': 'application/json' } : {};
+  if (opts.internal) headers['x-internal-key'] = process.env.INTERNAL_API_KEY;
+  else headers.Authorization = `Bearer ${opts.token || token}`;
   const res = await fetch(base + path, {
     method,
-    headers: body ? { 'Content-Type': 'application/json' } : {},
+    headers,
     body: body ? JSON.stringify(body) : undefined,
   });
   return { status: res.status, json: await res.json() };
@@ -108,7 +121,7 @@ test('C1. POST /certificates/badge with the exact body Person B sends -> 201', a
     topicId: 'sql-fundamentals',
     title: 'SQL Fundamentals',
     quizScore: 95,
-  });
+  }, { internal: true });
   assert.equal(status, 201);
   assert.equal(json.success, true);
   const cert = json.data.certificate;
@@ -120,7 +133,7 @@ test('C1. POST /certificates/badge with the exact body Person B sends -> 201', a
 });
 
 test('C2. Badge without title -> 400 VALIDATION_ERROR as JSON', async () => {
-  const { status, json } = await call('POST', '/certificates/badge', { userId: 'dev-user-1', quizScore: 90 });
+  const { status, json } = await call('POST', '/certificates/badge', { userId: 'dev-user-1', quizScore: 90 }, { internal: true });
   assert.equal(status, 400);
   assert.equal(json.success, false);
   assert.equal(json.error.code, 'VALIDATION_ERROR');
@@ -150,7 +163,7 @@ test('C6. Upload with a disallowed file type -> 400 INVALID_FILE_TYPE', async ()
   form.append('file', new Blob(['x'], { type: 'application/x-msdownload' }), 'a.exe');
   form.append('title', 't');
   form.append('issuer', 'i');
-  const res = await fetch(`${base}/certificates/upload`, { method: 'POST', body: form });
+  const res = await fetch(`${base}/certificates/upload`, { method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: form });
   const json = await res.json();
   assert.equal(res.status, 400);
   assert.equal(json.error.code, 'INVALID_FILE_TYPE');
@@ -160,8 +173,58 @@ test('C7. Upload with no file -> 400 VALIDATION_ERROR', async () => {
   const form = new FormData();
   form.append('title', 't');
   form.append('issuer', 'i');
-  const res = await fetch(`${base}/certificates/upload`, { method: 'POST', body: form });
+  const res = await fetch(`${base}/certificates/upload`, { method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: form });
   const json = await res.json();
   assert.equal(res.status, 400);
   assert.equal(json.error.code, 'VALIDATION_ERROR');
+});
+
+test('A7. Another user cannot edit or delete my application (ownership)', async () => {
+  const created = await call('POST', '/applications', { company: 'Mine Co', role: 'Intern' });
+  const id = created.json.data.application._id;
+
+  const patch = await call('PATCH', `/applications/${id}`, { notes: 'hijacked' }, { token: otherToken });
+  assert.equal(patch.status, 404);
+  const del = await call('DELETE', `/applications/${id}`, null, { token: otherToken });
+  assert.equal(del.status, 404);
+
+  const mine = await call('GET', '/applications');
+  assert.ok(mine.json.data.applications.some((a) => a._id === id && a.notes !== 'hijacked'));
+  await call('DELETE', `/applications/${id}`);
+});
+
+test('A8. Mass-assignment is ignored (a client cannot choose userId)', async () => {
+  const { json } = await call('POST', '/applications', { company: 'X', role: 'Y', userId: 'dev-user-1', extra: 'nope' });
+  assert.equal(json.data.application.userId, 'dev-user-1');
+  assert.equal(json.data.application.extra, undefined);
+  await call('DELETE', `/applications/${json.data.application._id}`);
+});
+
+test('C5. A student token cannot mint a badge', async () => {
+  const { status } = await call('POST', '/certificates/badge', { userId: 'dev-user-1', title: 'Free' });
+  assert.equal(status, 401);
+});
+
+test('C6. The same topic never produces two badges (idempotent)', async () => {
+  const body = { userId: 'dev-user-1', topicId: 'sql-fundamentals', title: 'SQL Fundamentals', quizScore: 95 };
+  const again = await call('POST', '/certificates/badge', body, { internal: true });
+  assert.equal(again.status, 200);
+  const list = await call('GET', '/certificates?type=badge');
+  assert.equal(list.json.data.certificates.length, 1);
+});
+
+test('C7. Another user cannot see my certificates through the filter', async () => {
+  const list = await call('GET', '/certificates?type=badge', null, { token: otherToken });
+  assert.equal(list.json.data.certificates.length, 0);
+  const forbidden = await call('GET', '/certificates?userId=dev-user-1', null, { token: otherToken });
+  assert.equal(forbidden.status, 403);
+});
+
+test('G1. Sheets: status reports not connected; sync without a connection -> SHEETS_NOT_CONNECTED', async () => {
+  const status = await call('GET', '/applications/sheets/status');
+  assert.equal(status.status, 200);
+  assert.equal(status.json.data.connected, false);
+  const sync = await call('POST', '/applications/sync-sheets', {});
+  assert.equal(sync.status, 400);
+  assert.equal(sync.json.error.code, 'SHEETS_NOT_CONNECTED');
 });

@@ -1,21 +1,30 @@
 // server/src/routes/quiz.routes.js
 
 const express = require('express');
-const router = express.Router();
+
 const { requireAuth } = require('../middleware/auth.middleware');
+const { expensiveLimiter } = require('../middleware/security.middleware');
 const {
   generateQuiz,
   submitQuiz,
   checkQuizAvailability,
+  getQuizStatusHandler,
 } = require('../controllers/quiz.controller');
 
-// POST /api/v1/quiz/generate/:topicId
-router.post('/generate/:topicId', requireAuth, generateQuiz);
+const router = express.Router();
 
-// POST /api/v1/quiz/submit
-router.post('/submit', requireAuth, submitQuiz);
+router.use(requireAuth);
 
-// GET /api/v1/quiz/availability/:topicId
-router.get('/availability/:topicId', requireAuth, checkQuizAvailability);
+// Generate (or fetch the cached) quiz for a topic. Calls the AI, so rate-limited.
+router.post('/generate/:topicId', expensiveLimiter, generateQuiz);
+
+// Submit answers.
+router.post('/submit', submitQuiz);
+
+// Are all lessons of this topic done?
+router.get('/availability/:topicId', checkQuizAvailability);
+
+// Attempts used/left, cooldown end, passed, and why a quiz is blocked.
+router.get('/status/:topicId', getQuizStatusHandler);
 
 module.exports = router;

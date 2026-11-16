@@ -21,9 +21,11 @@ const bcrypt  = require('bcryptjs');
 const User    = require('../models/User.model');
 const { signToken } = require('../utils/token');
 const { ok, fail }  = require('../utils/respond');
+const { primaryFrontendUrl } = require('../config/env');
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const BCRYPT_COST = 10;
+const DUMMY_HASH  = bcrypt.hashSync('not-a-real-password', BCRYPT_COST);
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -52,6 +54,15 @@ async function signup(req, res, next) {
     // Validate password strength (min 8 chars — simple rule per spec)
     if (String(password).length < 8) {
       return fail(res, 400, 'WEAK_PASSWORD', 'Password must be at least 8 characters.');
+    }
+    if (String(password).length > 128) {
+      return fail(res, 400, 'WEAK_PASSWORD', 'Password must be at most 128 characters.');
+    }
+    if (typeof name !== 'string' || typeof rawEmail !== 'string' || typeof password !== 'string') {
+      return fail(res, 400, 'INVALID_INPUT', 'name, email and password must be text.');
+    }
+    if (String(name).trim().length === 0 || String(name).trim().length > 80) {
+      return fail(res, 400, 'INVALID_INPUT', 'Name must be between 1 and 80 characters.');
     }
 
     // Check duplicate (case-insensitive because email is stored lowercase)
@@ -89,20 +100,27 @@ async function login(req, res, next) {
       return fail(res, 400, 'MISSING_FIELDS', 'email and password are required.');
     }
 
+    if (typeof rawEmail !== 'string' || typeof password !== 'string') {
+      return fail(res, 400, 'INVALID_INPUT', 'email and password must be text.');
+    }
+
     const email = String(rawEmail).toLowerCase().trim();
     const user  = await User.findOne({ email });
 
-    // Unknown email — same error as wrong password (prevents enumeration)
+    // Unknown email — same error as wrong password (prevents enumeration).
+    // Burn the same time as a real check so response time does not reveal
+    // which emails are registered.
     if (!user) {
+      await bcrypt.compare(String(password).slice(0, 128), DUMMY_HASH);
       return fail(res, 401, 'INVALID_CREDENTIALS', 'Invalid email or password.');
     }
 
     // Account created via Google — no passwordHash
-    if (user.authProvider === 'google' && !user.passwordHash) {
+    if (!user.passwordHash) {
       return fail(res, 401, 'USE_GOOGLE_LOGIN', 'This account uses Google Sign-In. Please log in with Google.');
     }
 
-    const valid = await bcrypt.compare(String(password), user.passwordHash);
+    const valid = await bcrypt.compare(String(password).slice(0, 128), user.passwordHash);
     if (!valid) {
       return fail(res, 401, 'INVALID_CREDENTIALS', 'Invalid email or password.');
     }
@@ -171,10 +189,9 @@ async function googleCallback(req, res, next) {
       GOOGLE_CLIENT_ID,
       GOOGLE_CLIENT_SECRET,
       GOOGLE_REDIRECT_URI,
-      FRONTEND_URL,
     } = process.env;
 
-    const frontendBase = FRONTEND_URL || 'http://localhost:3000';
+    const frontendBase = primaryFrontendUrl();
     const { code, state, error } = req.query;
 
     // Google returned an error (user denied consent, etc.)
@@ -220,7 +237,12 @@ async function googleCallback(req, res, next) {
       return res.redirect(`${frontendBase}/login?error=GOOGLE_USERINFO_FAILED`);
     }
 
-    const { sub: googleId, email: rawEmail, name } = await userInfoRes.json();
+    const { sub: googleId, email: rawEmail, name, email_verified: emailVerified } = await userInfoRes.json();
+
+    // Linking by email is only safe when Google has verified that email.
+    if (!rawEmail || emailVerified !== true) {
+      return res.redirect(`${frontendBase}/login?error=GOOGLE_EMAIL_UNVERIFIED`);
+    }
     const email = String(rawEmail).toLowerCase().trim();
 
     // Find existing user or create a new one

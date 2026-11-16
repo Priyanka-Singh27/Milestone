@@ -1,0 +1,61 @@
+/* Semantic palette. Theme IDs and mode are set before React paints. */
+:root {
+  color-scheme: light;
+  --page-1:#bfe3f6; --page-2:#dcf1f8; --page-3:#e9f7ee;
+  --surface:#fffaf0; --surface-2:#f5f0e4; --line:#d8d0bb; --frame:#e3d8b8; --frame-ring:#ffffffb8;
+  --text:#26414a; --muted:#596f77; --heading:#173f46;
+  --accent:#2f8f8a; --accent-strong:#216b68; --accent-soft:#d9f2e8; --accent-text:#ffffff;
+  --nav-bg:#173f46; --nav-text:#eff8f8; --nav-active:#fffaf0;
+  --gold-start:#f5d36b; --gold-end:#d5a63e; --gold-text:#382800;
+  --danger-bg:#fff0ed; --danger-text:#862f26; --danger-line:#d47b6e;
+  --success-bg:#e8f5e9; --success-text:#245b31; --success-line:#6aa878;
+  --warn-bg:#fff5d9; --warn-text:#684900; --warn-line:#b48a28;
+  --shadow:0 16px 34px #24434a22; --scrim:#142c3980;
+  --track-core:#dceefa; --track-practice:#eee8fa; --track-project:#e3f1df;
+  --status-applied-bg:#dceefa; --status-applied-text:#17476b;
+  --status-oa-bg:#fff1d2; --status-oa-text:#654800;
+  --status-interview-bg:#ece6fb; --status-interview-text:#473273;
+  --status-offer-bg:#e0f2e4; --status-offer-text:#20582d;
+  --status-rejected-bg:#fae5e1; --status-rejected-text:#762c26;
+  --status-custom-bg:#e9edf0; --status-custom-text:#34454d;
+  --road-edge:#9c7651; --road-base:#f8e6ba; --road-done:#67aa83; --road-line:#d0ac6b;
+  --meadow-1:#b9dcae; --meadow-2:#d8edc9; --lake-band-1:#a8d9e6; --lake-band-2:#c6e8ed;
+  --highland-1:#d8d3bf; --highland-2:#eee8d7;
+  --hill-1:#80b69a; --hill-2:#91c4a7; --hill-3:#acd4b6;
+  --lake-1:#75bfd0; --lake-2:#a5dbe2; --sky-hill-1:#93c7d8; --sky-hill-2:#acd9e4;
+  --prop-filter:none; --sun-glow:#fff4ccaa; --moon-glow:#fff4ccaa; --stars:none;
+  --teal:var(--accent); --teal-dark:var(--accent-strong); --deep:var(--heading);
+  --mint:var(--accent-soft); --blue:var(--page-1); --sky-top:var(--page-1);
+  --ink:var(--text); --cream:var(--surface); --frame-soft:var(--frame-ring);
+  --gold:var(--gold-start); --gold-dark:var(--gold-end); --coral:var(--danger-line);
+  --font:system-ui,-apple-system,"Segoe UI",sans-serif; --font-fun:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --radius:18px;
+}
+html[data-theme="ocean"] { --accent:#287b76; --accent-strong:#1e625e; --accent-soft:#d9f2e8; --page-1:#bfe3f6; --page-2:#dcf1f8; --page-3:#e9f7ee; --heading:#173f46; }
+html[data-theme="sky"] { --accent:#286fa7; --accent-strong:#205984; --accent-soft:#dfedf9; --page-1:#b7d9f5; --page-2:#d8eafa; --page-3:#ebf4fc; --heading:#1b3a57; }
+html[data-theme="grove"] { --accent:#397747; --accent-strong:#2c6038; --accent-soft:#e0f0dc; --page-1:#cde9d2; --page-2:#e0f0dc; --page-3:#f0f6e8; --heading:#1f4128; }
+html[data-theme="midnight"],html[data-theme="twilight"],html[data-theme="moonlit"] {
+  color-scheme:dark;
+  --surface:#192a37; --surface-2:#203543; --line:#3b5361; --frame:#3b5361; --frame-ring:#b7cfdd1a;
+  --text:#e5eef3; --muted:#bdcbd3; --nav-text:#e2edf2; --nav-active:#233947;
+  --accent-text:#10242b;
+  --gold-start:#f5d36b; --gold-end:#d5a63e; --gold-text:#302300;
+  --danger-bg:#482a2b; --danger-text:#ffd9d5; --danger-line:#d98780;
+  --success-bg:#203c32; --success-text:#d1f2dc; --success-line:#76bd8e;
+  --warn-bg:#493b20; --warn-text:#ffedbd; --warn-line:#d4b45d;
+  --shadow:0 18px 42px #0008; --scrim:#030a12b8; --prop-filter:brightness(.62) saturate(.82);
+  --track-core:#243b4b; --track-practice:#362f4c; --track-project:#293e32;
+  --status-applied-bg:#223c4e; --status-applied-text:#d7efff; --status-oa-bg:#493c23; --status-oa-text:#ffedc0;
+  --status-interview-bg:#3a3154; --status-interview-text:#e7dcff; --status-offer-bg:#244330; --status-offer-text:#d8f7df;
+  --status-rejected-bg:#4b2d2c; --status-rejected-text:#ffdfda; --status-custom-bg:#34434b; --status-custom-text:#e4edf1;
+  --road-edge:#765d46; --road-base:#534831; --road-done:#548a68; --road-line:#b69a5d;
+  --meadow-1:#304a3c; --meadow-2:#3b5745; --lake-band-1:#253e4d; --lake-band-2:#2d4b59;
+  --highland-1:#414143; --highland-2:#53504a; --stars:radial-gradient(1.5px 1.5px at 12% 19%,#fff9 98%,transparent),radial-gradient(1px 1px at 67% 24%,#fff8 98%,transparent),radial-gradient(1px 1px at 83% 9%,#fff8 98%,transparent);
+  --sun-glow:#d8ecff40; --moon-glow:#d8ecff72;
+}
+html[data-theme="midnight"] { --page-1:#0b1626; --page-2:#101f31; --page-3:#142a36; --heading:#d6f0ee; --accent:#55c9bd; --accent-strong:#8be1d7; --accent-soft:#203d42; --nav-bg:#102536; --hill-1:#355a62; --hill-2:#406c70; --hill-3:#4e7d7b; --lake-1:#24596a; --lake-2:#327586; --sky-hill-1:#244756; --sky-hill-2:#315c69; --map-meadow:linear-gradient(135deg,#304a3c,#3b5745); --map-lake:linear-gradient(135deg,#253e4d,#2d4b59); --map-highland:linear-gradient(135deg,#414143,#53504a); }
+html[data-theme="twilight"] { --page-1:#15112b; --page-2:#20183b; --page-3:#2b1d3e; --heading:#eee5ff; --accent:#b49af4; --accent-strong:#d0bfff; --accent-soft:#382e50; --nav-bg:#21183a; --hill-1:#51436b; --hill-2:#65517e; --hill-3:#78608d; --lake-1:#41406d; --lake-2:#5a5587; --sky-hill-1:#454064; --sky-hill-2:#5b5278; --map-meadow:linear-gradient(135deg,#39433d,#51495d); --map-lake:linear-gradient(135deg,#383856,#514b75); --map-highland:linear-gradient(135deg,#48434f,#635566); }
+html[data-theme="moonlit"] { --page-1:#0c1a13; --page-2:#14271a; --page-3:#1b3020; --heading:#e0f4df; --accent:#78d49a; --accent-strong:#a2e8b9; --accent-soft:#223e2c; --accent-text:#07140a; --nav-bg:#14271b; --hill-1:#34583b; --hill-2:#416c48; --hill-3:#518054; --lake-1:#2b5a4d; --lake-2:#39715b; --sky-hill-1:#2c4c3a; --sky-hill-2:#3c6245; --map-meadow:linear-gradient(135deg,#304a36,#3b5740); --map-lake:linear-gradient(135deg,#24473b,#2e5a45); --map-highland:linear-gradient(135deg,#41483b,#535749); }
+html[data-theme="ocean"] { --map-meadow:linear-gradient(135deg,#b9dcae,#d8edc9); --map-lake:linear-gradient(135deg,#a8d9e6,#c6e8ed); --map-highland:linear-gradient(135deg,#d8d3bf,#eee8d7); }
+html[data-theme="sky"] { --map-meadow:linear-gradient(135deg,#c2dfbb,#e0efd8); --map-lake:linear-gradient(135deg,#afd7ee,#d5e9f6); --map-highland:linear-gradient(135deg,#d0d8df,#e8eef3); }
+html[data-theme="grove"] { --map-meadow:linear-gradient(135deg,#b9dcae,#d8edc9); --map-lake:linear-gradient(135deg,#b2d9cf,#d2e9dd); --map-highland:linear-gradient(135deg,#d5d9bd,#e8edcf); }

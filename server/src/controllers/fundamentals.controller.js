@@ -4,6 +4,11 @@ const {
   getFundamentalsCurriculum,
   updateFundamentalsProgress,
 } = require('../services/fundamentals.service');
+const { FundamentalsProgress } = require('../models/Fundamentals.model');
+const { safeMessage } = require('../utils/safeError');
+
+// 'verified' is awarded only by passing the topic's quiz, never set by hand.
+const USER_SETTABLE_STATUSES = ['not_started', 'in_progress', 'completed'];
 
 /**
  * GET /api/v1/fundamentals?userId=...
@@ -21,7 +26,7 @@ async function getFundamentals(req, res) {
   } catch (err) {
     const statusCode = err.statusCode || 500;
     const code = err.code || 'SERVER_ERROR';
-    const message = err.message || 'Failed to retrieve fundamentals curriculum.';
+    const message = err.statusCode ? err.message : safeMessage(err);
 
     return res.status(statusCode).json({
       success: false,
@@ -47,6 +52,24 @@ async function updateFundamentalsTask(req, res) {
       });
     }
 
+    if (!USER_SETTABLE_STATUSES.includes(status)) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'INVALID_STATUS',
+          message: `Invalid status. Allowed values: ${USER_SETTABLE_STATUSES.join(', ')}`,
+        },
+      });
+    }
+
+    const existing = await FundamentalsProgress.findOne({ userId, topicId }).lean();
+    if (existing && existing.status === 'verified') {
+      return res.status(409).json({
+        success: false,
+        error: { code: 'TOPIC_VERIFIED', message: 'This topic is quiz-verified and can no longer be changed.' },
+      });
+    }
+
     const progress = await updateFundamentalsProgress({ userId, topicId, status });
 
     return res.status(200).json({
@@ -56,7 +79,7 @@ async function updateFundamentalsTask(req, res) {
   } catch (err) {
     const statusCode = err.statusCode || 500;
     const code = err.code || 'SERVER_ERROR';
-    const message = err.message || 'Failed to update fundamentals progress.';
+    const message = err.statusCode ? err.message : safeMessage(err);
 
     return res.status(statusCode).json({
       success: false,

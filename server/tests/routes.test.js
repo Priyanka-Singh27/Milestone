@@ -1,4 +1,4 @@
-const { test, describe, before, after } = require('node:test');
+const { test, describe, before, after, beforeEach, afterEach } = require('node:test');
 const assert = require('node:assert/strict');
 const http = require('http');
 const mongoose = require('mongoose');
@@ -9,6 +9,8 @@ mongoose.set('bufferCommands', false);
 
 const TEST_SECRET = 'routes-test-secret';
 process.env.JWT_SECRET = process.env.JWT_SECRET || TEST_SECRET;
+process.env.INTERNAL_API_KEY = process.env.INTERNAL_API_KEY || 'routes-test-internal-key';
+process.env.NODE_ENV = 'test';
 const authToken = jwt.sign(
   { userId: 'dev-user-1', email: 'dev-user-1@test.com' },
   process.env.JWT_SECRET
@@ -21,6 +23,32 @@ const Role = require('../src/models/Role.model');
 const Roadmap = require('../src/models/Roadmap.model');
 const { FundamentalsTopic, FundamentalsProgress } = require('../src/models/Fundamentals.model');
 const { DEFAULT_CURRICULUM } = require('../src/services/fundamentals.service');
+
+
+// The quiz module now checks that a topic is finished (and what attempts are left)
+// before generating or accepting a quiz. These stubs describe "a finished
+// fundamentals topic with no previous attempts" so each test can focus on its own rule.
+const gateStubs = (() => {
+  const saved = {};
+  return {
+    install() {
+      saved.exists = FundamentalsTopic.exists;
+      saved.progress = FundamentalsProgress.findOne;
+      saved.attempts = QuizAttempt.find;
+      saved.roadmap = Roadmap.findOne;
+      Roadmap.findOne = () => ({ lean: async () => null });
+      FundamentalsTopic.exists = async () => ({ _id: 'topic' });
+      FundamentalsProgress.findOne = () => ({ lean: async () => ({ status: 'completed' }) });
+      QuizAttempt.find = () => ({ sort: () => ({ lean: async () => [] }) });
+    },
+    restore() {
+      FundamentalsTopic.exists = saved.exists;
+      FundamentalsProgress.findOne = saved.progress;
+      QuizAttempt.find = saved.attempts;
+      Roadmap.findOne = saved.roadmap;
+    },
+  };
+})();
 
 function authFetch(url, options = {}) {
   const headers = {
@@ -54,6 +82,8 @@ describe('Person B HTTP Routes Integration Tests', () => {
   });
 
   describe('POST /api/v1/quiz/generate/:topicId', () => {
+    beforeEach(() => gateStubs.install());
+    afterEach(() => gateStubs.restore());
     test('returns 401 NO_TOKEN when authorization header is missing', async () => {
       const res = await fetch(`${baseUrl}/api/v1/quiz/generate/dbms-fundamentals`, {
         method: 'POST',
@@ -166,6 +196,8 @@ describe('Person B HTTP Routes Integration Tests', () => {
   });
 
   describe('POST /api/v1/quiz/submit', () => {
+    beforeEach(() => gateStubs.install());
+    afterEach(() => gateStubs.restore());
     test('returns 200 with { success: true, data: { attempt, score, passed } } on valid submission', async () => {
       const origQuizFindById = Quiz.findById;
       const origAttemptFindOne = QuizAttempt.findOne;
@@ -296,6 +328,8 @@ describe('Person B HTTP Routes Integration Tests', () => {
   });
 
   describe('PATCH /api/v1/fundamentals/task/:topicId', () => {
+    beforeEach(() => gateStubs.install());
+    afterEach(() => gateStubs.restore());
     test('returns 200 with updated progress on valid status', async () => {
       const origTopicFindOne = FundamentalsTopic.findOne;
       const origProgressUpdate = FundamentalsProgress.findOneAndUpdate;

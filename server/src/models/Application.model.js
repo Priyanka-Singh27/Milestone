@@ -5,12 +5,12 @@ const mongoose = require('mongoose');
 const applicationSchema = new mongoose.Schema(
   {
     userId: { type: String, required: true, index: true },
-    company: { type: String, required: true },
-    role: { type: String, required: true },
-    status: { type: String, required: true, default: 'Applied' },
+    company: { type: String, required: true, trim: true, maxlength: 120 },
+    role: { type: String, required: true, trim: true, maxlength: 120 },
+    status: { type: String, required: true, default: 'Applied', trim: true, maxlength: 40 },
     appliedDate: { type: Date, required: true },
     lastUpdated: { type: Date, default: Date.now },
-    notes: { type: String, default: '' },
+    notes: { type: String, default: '', maxlength: 2000 },
   },
   { timestamps: true }
 );
