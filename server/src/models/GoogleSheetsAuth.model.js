@@ -4,7 +4,6 @@
 // (AES-256-GCM, see utils/crypto.js). Never returned by any endpoint.
 
 const mongoose = require('mongoose');
-
 const googleSheetsAuthSchema = new mongoose.Schema(
   {
     userId: { type: String, required: true, unique: true },

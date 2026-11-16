@@ -68,9 +68,9 @@ const getApplications = async (req, res) => {
 /** POST /applications */
 const createApplication = async (req, res) => {
   try {
-    if (!assertSelf(req, res, req.body.userId)) return;
+    if (!assertSelf(req, res, req.body?.userId)) return;
 
-    const { value, error } = readFields(req.body, { requireAll: true });
+    const { value, error } = readFields(req.body || {}, { requireAll: true });
     if (error) return bad(res, 'VALIDATION_ERROR', error);
 
     const count = await Application.countDocuments({ userId: req.user.userId });
@@ -97,9 +97,9 @@ const updateApplication = async (req, res) => {
   try {
     const { id } = req.params;
     if (!mongoose.isValidObjectId(id)) return bad(res, 'INVALID_ID', 'Invalid id format.');
-    if (!assertSelf(req, res, req.body.userId)) return;
+    if (!assertSelf(req, res, req.body?.userId)) return;
 
-    const { value, error } = readFields(req.body, { requireAll: false });
+    const { value, error } = readFields(req.body || {}, { requireAll: false });
     if (error) return bad(res, 'VALIDATION_ERROR', error);
     if (Object.keys(value).length === 0) return bad(res, 'VALIDATION_ERROR', 'No fields to update.');
 
