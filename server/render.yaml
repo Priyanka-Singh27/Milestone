@@ -1,0 +1,48 @@
+# render.yaml — Render blueprint for the API (server folder).
+# Frontend: deploy /client to Vercel (see DEPLOYMENT.md).
+services:
+  - type: web
+    name: milestone-api
+    runtime: node
+    rootDir: server
+    plan: free
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/v1/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22.12.0"
+      - key: NODE_ENV
+        value: production
+      # Render injects PORT itself; the server reads it.
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: INTERNAL_API_KEY
+        generateValue: true
+      - key: TOKEN_ENCRYPTION_KEY
+        generateValue: true
+      - key: FRONTEND_URL            # e.g. https://milestone.vercel.app  (no trailing slash)
+        sync: false
+      - key: INTERNAL_API_URL        # this service's own URL, e.g. https://milestone-api.onrender.com
+        sync: false
+      - key: LLM_PROVIDER
+        value: groq
+      - key: LLM_API_KEY
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REDIRECT_URI     # https://<api>/api/v1/auth/google/callback
+        sync: false
+      - key: GOOGLE_SHEETS_REDIRECT_URI  # https://<api>/api/v1/applications/sheets/callback
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false

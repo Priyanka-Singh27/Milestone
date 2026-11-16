@@ -736,6 +736,7 @@ describe('Module D integration tests', () => {
             sub:   'google-sub-789',
             email: 'CHARLIE@TEST.COM', // Mixed-case to assert lowercasing
             name:  'Charlie Google',
+            email_verified: true,
           }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' },

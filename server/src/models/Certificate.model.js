@@ -16,4 +16,10 @@ const certificateSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// One platform badge per user per topic (belt-and-braces with the check in createBadge).
+certificateSchema.index(
+  { userId: 1, tags: 1 },
+  { unique: true, partialFilterExpression: { type: 'badge' } }
+);
+
 module.exports = mongoose.model('Certificate', certificateSchema);

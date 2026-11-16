@@ -1,8 +1,11 @@
 // server/src/controllers/roadmap.controller.js
 
+const mongoose = require('mongoose');
 const Role = require('../models/Role.model');
 const Roadmap = require('../models/Roadmap.model');
 const { callLLM } = require('../services/llm.service');
+const { assertSelf } = require('../middleware/security.middleware');
+const { safeMessage } = require('../utils/safeError');
 const {
   generateNextWindow,
   estimateFoundationalDuration,
@@ -107,15 +110,47 @@ function hasIncompletePastTask(pastDays) {
 // ---------------------------------------------------------------------------
 // POST /api/v1/roadmap/estimate
 // ---------------------------------------------------------------------------
+
+// ── Input validation shared by estimate + generate ───────────────────────────
+// Limits keep a single request from asking the AI to write an absurd roadmap.
+const LIMITS = { maxHoursPerDay: 16, maxBufferInterval: 30, maxGapTopics: 300 };
+
+function validatePlanInput(body) {
+  const { targetRoleId, gapTopicIds, hoursPerDay, daysPerWeek, bufferInterval } = body;
+
+  if (typeof targetRoleId !== 'string' || !targetRoleId) {
+    return 'targetRoleId is required.';
+  }
+  if (!Array.isArray(gapTopicIds) || gapTopicIds.length > LIMITS.maxGapTopics ||
+      !gapTopicIds.every((id) => typeof id === 'string')) {
+    return 'gapTopicIds must be an array of topic id strings.';
+  }
+  if (typeof hoursPerDay !== 'number' || !(hoursPerDay > 0) || hoursPerDay > LIMITS.maxHoursPerDay) {
+    return `hoursPerDay must be a number greater than 0 and at most ${LIMITS.maxHoursPerDay}.`;
+  }
+  if (daysPerWeek !== undefined &&
+      !(Number.isInteger(daysPerWeek) && daysPerWeek >= 1 && daysPerWeek <= 7)) {
+    return 'daysPerWeek must be a whole number from 1 to 7.';
+  }
+  if (bufferInterval !== undefined &&
+      !(Number.isInteger(bufferInterval) && bufferInterval >= 0 && bufferInterval <= LIMITS.maxBufferInterval)) {
+    return `bufferInterval must be a whole number from 0 to ${LIMITS.maxBufferInterval}.`;
+  }
+  return null;
+}
+
+const USER_SETTABLE_STATUSES = ['not_started', 'in_progress', 'completed'];
+
 async function estimateRoadmap(req, res) {
   try {
     const { targetRoleId, gapTopicIds, hoursPerDay, daysPerWeek, bufferInterval } = req.body;
 
-    if (!targetRoleId || !Array.isArray(gapTopicIds) || !hoursPerDay) {
-      return res.status(400).json({ success: false, error: { code: 'INVALID_INPUT', message: 'targetRoleId, gapTopicIds, and hoursPerDay are required.' } });
+    const problem = validatePlanInput(req.body);
+    if (problem) {
+      return res.status(400).json({ success: false, error: { code: 'INVALID_INPUT', message: problem } });
     }
 
-    const role = await Role.findById(targetRoleId);
+    const role = mongoose.isValidObjectId(targetRoleId) ? await Role.findById(targetRoleId) : null;
     if (!role) {
       return res.status(404).json({ success: false, error: { code: 'ROLE_NOT_FOUND', message: 'No role found with that ID.' } });
     }
@@ -130,7 +165,7 @@ async function estimateRoadmap(req, res) {
     const estimate = estimateFoundationalDuration({ gapTopics, hoursPerDay, daysPerWeek: daysPerWeek || 5, bufferInterval: bufferInterval || 0 });
     res.status(200).json({ success: true, data: { estimate } });
   } catch (err) {
-    res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: err.message } });
+    res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: safeMessage(err) } });
   }
 }
 
@@ -139,13 +174,26 @@ async function estimateRoadmap(req, res) {
 // ---------------------------------------------------------------------------
 async function generateRoadmap(req, res) {
   try {
-    const { userId, targetRoleId, gapTopicIds, hoursPerDay, bufferInterval, daysPerWeek } = req.body;
+    const { targetRoleId, gapTopicIds, hoursPerDay, bufferInterval, daysPerWeek, replace } = req.body;
+    const userId = req.user.userId; // always the logged-in user
+    if (!assertSelf(req, res, req.body.userId)) return;
 
-    if (!userId || !targetRoleId || !Array.isArray(gapTopicIds) || !hoursPerDay) {
-      return res.status(400).json({ success: false, error: { code: 'INVALID_INPUT', message: 'userId, targetRoleId, gapTopicIds, and hoursPerDay are required.' } });
+    const problem = validatePlanInput(req.body);
+    if (problem) {
+      return res.status(400).json({ success: false, error: { code: 'INVALID_INPUT', message: problem } });
     }
 
-    const role = await Role.findById(targetRoleId);
+    // One roadmap per user. Replacing needs an explicit `replace: true` so a
+    // double-click or retry can never silently create (or wipe) a roadmap.
+    const existing = await Roadmap.exists({ userId });
+    if (existing && replace !== true) {
+      return res.status(409).json({
+        success: false,
+        error: { code: 'ROADMAP_EXISTS', message: 'You already have a roadmap. Confirm to replace it with a new one.' },
+      });
+    }
+
+    const role = mongoose.isValidObjectId(targetRoleId) ? await Role.findById(targetRoleId) : null;
     if (!role) {
       return res.status(404).json({ success: false, error: { code: 'ROLE_NOT_FOUND', message: 'No role found with that ID.' } });
     }
@@ -172,6 +220,8 @@ async function generateRoadmap(req, res) {
 
     const roadmapDays = await buildRoadmapDays(days);
 
+    if (existing) await Roadmap.deleteMany({ userId }); // only reached after the new days were built successfully
+
     const roadmap = await Roadmap.create({
       userId,
       targetRoleId,
@@ -186,7 +236,13 @@ async function generateRoadmap(req, res) {
 
     res.status(201).json({ success: true, data: { roadmap, currentPhase: phase } });
   } catch (err) {
-    res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: err.message } });
+    if (err && err.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        error: { code: 'ROADMAP_EXISTS', message: 'You already have a roadmap.' },
+      });
+    }
+    res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: safeMessage(err) } });
   }
 }
 
@@ -206,7 +262,9 @@ async function generateRoadmap(req, res) {
 async function getRoadmap(req, res) {
   try {
     const { userId } = req.params;
-    const roadmap = await Roadmap.findOne({ userId });
+    if (!assertSelf(req, res, userId)) return;
+
+    const roadmap = await Roadmap.findOne({ userId: req.user.userId });
 
     if (!roadmap) {
       return res.status(404).json({ success: false, error: { code: 'ROADMAP_NOT_FOUND', message: 'No roadmap found for this user.' } });
@@ -275,7 +333,7 @@ async function getRoadmap(req, res) {
 
     res.status(200).json({ success: true, data: { roadmap } });
   } catch (err) {
-    res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: err.message } });
+    res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: safeMessage(err) } });
   }
 }
 
@@ -285,10 +343,19 @@ async function getRoadmap(req, res) {
 async function updateTaskStatus(req, res) {
   try {
     const { taskId } = req.params;
-    const { userId, status } = req.body;
+    const { status, dayNumber } = req.body;
+    const userId = req.user.userId; // always the logged-in user
+    if (!assertSelf(req, res, req.body.userId)) return;
 
-    if (!userId || !status) {
-      return res.status(400).json({ success: false, error: { code: 'INVALID_INPUT', message: 'userId and status are required.' } });
+    if (!status) {
+      return res.status(400).json({ success: false, error: { code: 'INVALID_INPUT', message: 'status is required.' } });
+    }
+    // 'verified' is set only by the quiz system, never by the student.
+    if (!USER_SETTABLE_STATUSES.includes(status)) {
+      return res.status(400).json({
+        success: false,
+        error: { code: 'INVALID_INPUT', message: `status must be one of: ${USER_SETTABLE_STATUSES.join(', ')}.` },
+      });
     }
 
     const roadmap = await Roadmap.findOne({ userId });
@@ -296,11 +363,13 @@ async function updateTaskStatus(req, res) {
       return res.status(404).json({ success: false, error: { code: 'ROADMAP_NOT_FOUND', message: 'No roadmap found for this user.' } });
     }
 
+    // The same task id can appear on two days (a long lesson split over days),
+    // so the client may name the day it means.
     let foundTask = null;
     for (const day of roadmap.days) {
-      const task = (day.tasks || []).find(t => t.id === taskId);
+      if (dayNumber !== undefined && day.dayNumber !== Number(dayNumber)) continue;
+      const task = (day.tasks || []).find((t) => t.id === taskId);
       if (task) {
-        task.status = status;
         foundTask = task;
         break;
       }
@@ -309,11 +378,19 @@ async function updateTaskStatus(req, res) {
     if (!foundTask) {
       return res.status(404).json({ success: false, error: { code: 'TASK_NOT_FOUND', message: 'No task found with that ID.' } });
     }
+    if (foundTask.status === 'verified') {
+      return res.status(409).json({
+        success: false,
+        error: { code: 'TASK_VERIFIED', message: 'This task is quiz-verified and can no longer be changed.' },
+      });
+    }
 
+    foundTask.status = status;
     await roadmap.save();
+
     res.status(200).json({ success: true, data: { task: foundTask } });
   } catch (err) {
-    res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: err.message } });
+    res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: safeMessage(err) } });
   }
 }
 

@@ -1,0 +1,734 @@
+/* ==================================================
+   VOYAGE MAP — uses the app's theme tokens, so it
+   follows Mystic Sea / Arctic Bloom / Enchanted Garden
+================================================== */
+
+.vy-page {
+  --vy-road: var(--blue);
+  --vy-road-edge: var(--sea);
+  --vy-done: var(--teal);
+  --vy-warn: #c08a3e;
+}
+
+/* ---------- stats strip ---------- */
+
+.vy-stats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 4px 0 18px;
+}
+
+.vy-stat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--teal-dark);
+}
+
+.vy-stat strong {
+  display: block;
+  font-size: 18px;
+  line-height: 1.1;
+  color: var(--deep);
+}
+
+.vy-stat span {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.vy-refresh {
+  margin-left: auto;
+}
+
+/* ---------- layout ---------- */
+
+.vy-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 24px;
+  align-items: start;
+}
+
+.vy-sea {
+  min-width: 0;
+  padding: 0 0 8px;
+  border-radius: 32px;
+  overflow: hidden;
+}
+
+.vy-more {
+  position: relative;
+  z-index: 4;
+  display: block;
+  margin: 14px auto 0;
+  padding: 8px 16px;
+  border: 2px dashed var(--teal);
+  border-radius: 999px;
+  background: var(--cream);
+  color: var(--teal-dark);
+  font-weight: 700;
+}
+
+.vy-map {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* regions (one per chapter) */
+.vy-band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 100px);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 100px);
+}
+
+.vy-band-first {
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.vy-band-meadow { background: linear-gradient(180deg, #e3f5e4, #c7ead2); }
+.vy-band-lake { background: linear-gradient(180deg, #dcf1f8, #b8e0ee); }
+.vy-band-highland { background: linear-gradient(180deg, #e8eef8, #d3ddf0); }
+
+.vy-road {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.vy-road path {
+  fill: none;
+  stroke-linecap: round;
+}
+
+.vy-road-edge {
+  stroke: #cdbf93;
+  stroke-width: 42;
+}
+
+.vy-road-base {
+  stroke: #f7edd0;
+  stroke-width: 34;
+}
+
+.vy-road-done {
+  stroke: #9ddcd0;
+  stroke-width: 34;
+}
+
+.vy-road-line {
+  stroke: #ffffff;
+  stroke-width: 3;
+  stroke-dasharray: 1 12;
+  opacity: 0.9;
+}
+
+/* ---------- landmarks ---------- */
+
+.vy-decor {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.vy-decor svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ---------- region banners ---------- */
+
+.vy-chapter {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  gap: 3px;
+  justify-items: center;
+  min-width: 230px;
+  padding: 10px 24px 11px;
+  background: var(--cream);
+  border: 2px solid var(--frame);
+  border-radius: 18px;
+  box-shadow: 0 0 0 4px var(--frame-soft), 0 10px 20px #24434a22;
+  text-align: center;
+  z-index: 4;
+}
+
+.vy-chapter .ornate-rule {
+  width: 100%;
+  font-size: 12px;
+}
+
+.vy-chapter strong {
+  font-family: var(--font-fun);
+  font-size: 19px;
+  line-height: 1.1;
+  color: var(--deep);
+}
+
+.vy-chapter small {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+}
+
+.vy-chapter-done .ornate-rule {
+  color: #d39a2a;
+}
+
+/* ---------- stops ---------- */
+
+.vy-node {
+  position: absolute;
+  width: 58px;
+  height: 58px;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  background: var(--cream);
+  color: var(--teal-dark);
+  box-shadow: 0 0 0 3px var(--frame), 0 8px 14px #24434a30;
+  z-index: 3;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vy-node:hover {
+  transform: translate(-50%, -50%) scale(1.07);
+}
+
+.vy-node:focus-visible,
+.vy-label:focus-visible {
+  outline: 3px solid var(--teal);
+  outline-offset: 3px;
+}
+
+.vy-selected {
+  box-shadow: 0 0 0 4px var(--deep), 0 8px 14px #24434a30;
+}
+
+.vy-done {
+  background: var(--teal);
+  color: #fff;
+  box-shadow: 0 0 0 3px #bfeee6, 0 0 18px #7fd6c9aa;
+}
+
+.vy-partial {
+  background: var(--mint);
+  box-shadow: 0 0 0 3px var(--teal), 0 8px 14px #24434a30;
+}
+
+.vy-upcoming { color: var(--muted); }
+
+.vy-missed {
+  background: #fbf0d8;
+  color: #b9822f;
+  box-shadow: 0 0 0 3px #e6cf9f, 0 8px 14px #24434a30;
+}
+
+.vy-passed {
+  background: var(--sage);
+  color: var(--muted);
+}
+
+.vy-rest {
+  width: 46px;
+  height: 46px;
+  background: #fde9d9;
+  color: #c4685f;
+}
+
+.vy-practice {
+  background: #dfe6fb;
+  color: #5b6fb5;
+}
+
+.vy-dest-node {
+  position: relative;
+  transform: none;
+  background: var(--deep);
+  color: #ffe08a;
+}
+
+.vy-dest-node:hover {
+  transform: none;
+}
+
+/* Pip the mascot — the one gentle animation on the page */
+.vy-pip {
+  position: absolute;
+  left: 50%;
+  bottom: 66%;
+  margin-left: -29px;
+  pointer-events: none;
+  animation: vy-bob 3.2s ease-in-out infinite;
+}
+
+@keyframes vy-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+/* ---------- labels (little cream signboards) ---------- */
+
+.vy-label {
+  position: absolute;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 9px 12px;
+  border: 2px solid var(--frame);
+  border-radius: 14px;
+  background: var(--cream);
+  box-shadow: 0 6px 12px #24434a1c;
+  color: var(--ink);
+  text-align: left;
+  z-index: 3;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vy-label:hover {
+  box-shadow: 0 10px 18px #24434a2c;
+}
+
+.vy-label-left {
+  text-align: right;
+  align-items: flex-end;
+}
+
+.vy-label-upcoming,
+.vy-label-passed {
+  background: #fffaf0e6;
+}
+
+.vy-label-done {
+  background: #e7f7f2;
+  border-color: #aadfd5;
+}
+
+.vy-label-kicker {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.vy-label-left .vy-label-kicker {
+  justify-content: flex-end;
+}
+
+.vy-label-kicker b {
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--deep);
+  color: #fff;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+}
+
+.vy-label-kicker b.vy-warn {
+  background: #c08a3e;
+}
+
+.vy-label strong {
+  font-size: 13.5px;
+  line-height: 1.25;
+  color: var(--deep);
+}
+
+.vy-label small {
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+/* ---------- destination ---------- */
+
+.vy-destination {
+  position: absolute;
+  transform: translate(-50%, -62%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 250px;
+  text-align: center;
+  z-index: 3;
+}
+
+.vy-dest-mountain {
+  width: 170px;
+  margin-bottom: -30px;
+}
+
+.vy-dest-mountain svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.vy-dest-text {
+  padding: 8px 14px;
+  background: var(--cream);
+  border: 2px solid var(--frame);
+  border-radius: 14px;
+}
+
+.vy-dest-text strong {
+  display: block;
+  font-family: var(--font-fun);
+  color: var(--deep);
+}
+
+.vy-dest-text small {
+  color: var(--muted);
+}
+
+/* ---------- detail panel ---------- */
+
+.vy-panel {
+  position: sticky;
+  top: 92px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  max-height: calc(100vh - 112px);
+  overflow-y: auto;
+}
+
+.vy-panel-empty {
+  padding: 28px 24px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.vy-panel-mascot {
+  display: grid;
+  place-items: center;
+  margin-bottom: 6px;
+}
+
+.vy-panel-empty h3 {
+  margin: 10px 0 6px;
+  color: var(--deep);
+}
+
+.vy-legend {
+  display: grid;
+  gap: 8px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+  font-size: 13px;
+}
+
+.vy-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 8px;
+  border-radius: 50%;
+  vertical-align: -1px;
+}
+
+.vy-dot-done { background: var(--teal); }
+.vy-dot-current { background: var(--mint); box-shadow: 0 0 0 2px var(--teal); }
+.vy-dot-upcoming { background: var(--surface); box-shadow: 0 0 0 2px var(--sea); }
+.vy-dot-missed { background: #fbf3e4; box-shadow: 0 0 0 2px #e6cf9f; }
+
+.vy-panel-body {
+  padding: 20px;
+}
+
+.vy-panel-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.vy-panel-kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.vy-panel-head h3 {
+  margin: 4px 0 0;
+  font-size: 18px;
+  color: var(--deep);
+}
+
+.vy-close {
+  display: none;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.vy-note {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: #fbf3e4;
+  color: #8a6420;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.vy-note svg { flex: none; margin-top: 2px; }
+
+.vy-note-soft {
+  background: var(--sage);
+  color: var(--teal-dark);
+}
+
+.vy-plan {
+  margin-top: 14px;
+  color: var(--ink);
+}
+
+.vy-plan ul {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.vy-plan li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--sage);
+  border-radius: var(--radius-sm);
+}
+
+.vy-panel-progress {
+  margin: 16px 0 12px;
+}
+
+.vy-panel-progress small {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+}
+
+.vy-tasks {
+  display: grid;
+  gap: 10px;
+}
+
+.vy-task {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.vy-task-done {
+  background: var(--sage);
+}
+
+.vy-task-done strong {
+  text-decoration: line-through;
+  text-decoration-color: var(--teal);
+  color: var(--muted);
+}
+
+.vy-check {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin-top: 1px;
+  border: 2px solid var(--sea);
+  border-radius: 8px;
+  background: var(--surface);
+  color: #fff;
+}
+
+.vy-task-done .vy-check {
+  background: var(--teal);
+  border-color: var(--teal);
+}
+
+.vy-task-text strong {
+  display: block;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.vy-task-text p {
+  margin: 4px 0 8px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.vy-task-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.vy-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.vy-verified { color: var(--teal-dark); font-weight: 600; }
+
+.vy-chip {
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--teal);
+}
+
+.vy-chip-plain {
+  background: var(--blue);
+  color: var(--deep);
+  font-weight: 600;
+}
+
+/* one hue per learning track */
+.vy-track-DSA { background: #2f7f86; }
+.vy-track-CoreCS { background: #5b6fb5; }
+.vy-track-Aptitude { background: #b9822f; }
+.vy-track-ToolsLibraries { background: #c4685f; }
+
+/* ---------- setup form ---------- */
+
+.vy-setup {
+  display: grid;
+  gap: 16px;
+  max-width: 560px;
+  margin: 24px auto;
+  padding: 32px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+}
+
+.vy-setup h1,
+.vy-setup p { margin: 0; }
+
+.vy-setup label {
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+  color: var(--deep);
+}
+
+.vy-setup select {
+  padding: 11px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-soft);
+  color: var(--ink);
+}
+
+.vy-setup-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.vy-estimate {
+  display: flex;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: var(--mint);
+  color: var(--teal-dark);
+  line-height: 1.45;
+}
+
+.vy-estimate svg { flex: none; margin-top: 2px; }
+
+.vy-wait {
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ==================================================
+   RESPONSIVE: below 1150px the panel becomes a
+   bottom sheet that only appears once a stop is chosen
+================================================== */
+
+@media (max-width: 1150px) {
+  .vy-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .vy-panel {
+    display: none;
+  }
+
+  .vy-panel.vy-panel-open {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: auto;
+    z-index: 50;
+    max-height: 72vh;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    box-shadow: 0 -12px 40px #24434a33;
+  }
+
+  .vy-close {
+    display: grid;
+  }
+}
+
+@media (max-width: 520px) {
+  .vy-setup { padding: 22px; }
+  .vy-setup-row { grid-template-columns: minmax(0, 1fr); }
+  .vy-refresh { margin-left: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vy-pip { animation: none; }
+  .vy-node,
+  .vy-label { transition: none; }
+}

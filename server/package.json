@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon server.js",
     "test": "node --test",
-    "seed:users": "node src/seed/seedUsers.js"
+    "seed:users": "node src/seed/seedUsers.js",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
@@ -19,8 +20,10 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.7.4",
     "googleapis": "^178.0.0",
     "groq-sdk": "^1.6.0",
+    "helmet": "^8.3.0",
     "jsonwebtoken": "^9.0.3",
     "mammoth": "^1.12.3",
     "mongoose": "^9.9.4",
@@ -29,6 +32,9 @@
   },
   "devDependencies": {
     "mongodb-memory-server": "^11.3.0",
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.11"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

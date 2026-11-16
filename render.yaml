@@ -1,43 +1,48 @@
+# render.yaml — Render blueprint for the API (server folder).
+# Frontend: deploy /client to Vercel (see DEPLOYMENT.md).
 services:
   - type: web
-    name: prep-roadmap-server
-    env: node
-    plan: free
-    region: oregon
+    name: milestone-api
+    runtime: node
     rootDir: server
-    buildCommand: npm install
-    startCommand: node server.js
-    healthCheckPath: /api/v1/roles
+    plan: free
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/v1/health
+    autoDeploy: true
     envVars:
+      - key: NODE_VERSION
+        value: "22.12.0"
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 5000
+      # Render injects PORT itself; the server reads it.
       - key: DATABASE_URL
         sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: INTERNAL_API_KEY
         generateValue: true
-      - key: INTERNAL_API_URL
-        value: http://localhost:5000/api/v1
-      - key: FRONTEND_URL
+      - key: TOKEN_ENCRYPTION_KEY
+        generateValue: true
+      - key: FRONTEND_URL            # e.g. https://milestone.vercel.app  (no trailing slash)
         sync: false
-      - key: DEV_USER_PASSWORD
-        sync: false
-      - key: LLM_API_KEY
+      - key: INTERNAL_API_URL        # this service's own URL, e.g. https://milestone-api.onrender.com
         sync: false
       - key: LLM_PROVIDER
         value: groq
+      - key: LLM_API_KEY
+        sync: false
       - key: GOOGLE_CLIENT_ID
         sync: false
       - key: GOOGLE_CLIENT_SECRET
         sync: false
-      - key: GOOGLE_REDIRECT_URI
+      - key: GOOGLE_REDIRECT_URI     # https://<api>/api/v1/auth/google/callback
         sync: false
-      - key: S3_BUCKET_NAME
+      - key: GOOGLE_SHEETS_REDIRECT_URI  # https://<api>/api/v1/applications/sheets/callback
         sync: false
-      - key: S3_ACCESS_KEY
+      - key: CLOUDINARY_CLOUD_NAME
         sync: false
-      - key: S3_SECRET_KEY
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
         sync: false

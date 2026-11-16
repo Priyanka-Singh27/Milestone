@@ -4,12 +4,36 @@
 // Calls Person A's skill verification endpoint and Person C's badge endpoint
 // over HTTP without writing directly into other modules' database tables.
 
+const { internalOrigin } = require('../utils/internalUrl');
+
 function getBaseUrl() {
-  if (process.env.INTERNAL_API_URL) {
-    return process.env.INTERNAL_API_URL.replace(/\/$/, '');
+  // Returns the server origin WITHOUT "/api/v1" (callers append the path).
+  // Accepts INTERNAL_API_URL written either way.
+  return internalOrigin();
+}
+
+/** Internal calls carry the shared secret; the receiving routes only accept this. */
+function internalHeaders() {
+  return {
+    'Content-Type': 'application/json',
+    'x-internal-key': process.env.INTERNAL_API_KEY || '',
+  };
+}
+
+/** Try up to 3 times: a passed quiz must not lose its badge to one network blip. */
+async function fetchWithRetry(url, options, attempts = 3) {
+  let lastErr;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      const res = await fetch(url, options);
+      if (res.status < 500) return res;
+      lastErr = new Error(`Status ${res.status}`);
+    } catch (err) {
+      lastErr = err;
+    }
+    await new Promise((r) => setTimeout(r, 300 * (i + 1)));
   }
-  const port = process.env.PORT || 5000;
-  return `http://localhost:${port}`;
+  throw lastErr;
 }
 
 /**
@@ -22,9 +46,9 @@ async function verifySkillWithPersonA({ userId, topicId }) {
   const url = `${baseUrl}/api/v1/skills/verify`;
 
   try {
-    const res = await fetch(url, {
+    const res = await fetchWithRetry(url, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: internalHeaders(),
       body: JSON.stringify({ userId, topicId }),
     });
 
@@ -55,9 +79,9 @@ async function issueBadgeWithPersonC({ userId, topicId, title, quizScore }) {
   const url = `${baseUrl}/api/v1/certificates/badge`;
 
   try {
-    const res = await fetch(url, {
+    const res = await fetchWithRetry(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: internalHeaders(),
       body: JSON.stringify({ userId, topicId, title, quizScore }),
     });
 

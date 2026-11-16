@@ -1,214 +1,137 @@
-const crypto = require('crypto');
+// Google Sheets sync using per-user OAuth credentials. Refresh tokens are
+// encrypted at rest; OAuth state is signed and expires after ten minutes.
 const { google } = require('googleapis');
 const jwt = require('jsonwebtoken');
 const SheetMapping = require('../models/SheetMapping.model');
 const GoogleSheetsAuth = require('../models/GoogleSheetsAuth.model');
+const { encrypt, decrypt } = require('../utils/crypto');
 
-// Incremental consent (CONTRACTS.md 7.1): users sign in with basic scopes;
-// the Sheets scope is only requested when they choose to connect Sheets.
 const SHEETS_SCOPE = 'https://www.googleapis.com/auth/spreadsheets';
 const HEADERS = ['Company', 'Role', 'Status', 'Applied Date', 'Last Updated', 'Notes'];
 const TAB = 'Applications';
 
-// Errors carry an HTTP status and a code so the controller can answer with
-// the standard { success: false, error: { code, message } } shape.
-const fail = (status, code, message) => Object.assign(new Error(message), { status, code });
-
-const requireSecret = () => {
-  if (!process.env.JWT_SECRET) {
-    throw fail(500, 'SHEETS_NOT_CONFIGURED', 'JWT_SECRET is not set on the server.');
+class SheetsError extends Error {
+  constructor(code, message, statusCode = 400) {
+    super(message);
+    this.code = code;
+    this.statusCode = statusCode;
   }
-  return process.env.JWT_SECRET;
-};
+}
 
-// Separate keys derived from JWT_SECRET so a login token can never be used
-// as a Sheets "state" token, and the stored refresh token is encrypted with
-// its own key.
-const derive = (label) =>
-  crypto.createHash('sha256').update(`${label}:${requireSecret()}`).digest();
+function sheetsConfig() {
+  const clientId = process.env.GOOGLE_CLIENT_ID;
+  const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+  const redirectUri = process.env.GOOGLE_SHEETS_REDIRECT_URI ||
+    (process.env.GOOGLE_REDIRECT_URI || '').replace(/\/auth\/google\/callback\/?$/, '/applications/sheets/callback');
+  return { clientId, clientSecret, redirectUri,
+    configured: Boolean(clientId && clientSecret && redirectUri.includes('/sheets/callback')) };
+}
 
-const encryptToken = (plain) => {
-  const iv = crypto.randomBytes(12);
-  const cipher = crypto.createCipheriv('aes-256-gcm', derive('sheets-token'), iv);
-  const enc = Buffer.concat([cipher.update(plain, 'utf8'), cipher.final()]);
-  const tag = cipher.getAuthTag();
-  return [iv, tag, enc].map((b) => b.toString('base64')).join('.');
-};
+function isConfigured() { return sheetsConfig().configured; }
 
-const decryptToken = (packed) => {
-  const [iv, tag, enc] = packed.split('.').map((p) => Buffer.from(p, 'base64'));
-  const decipher = crypto.createDecipheriv('aes-256-gcm', derive('sheets-token'), iv);
-  decipher.setAuthTag(tag);
-  return Buffer.concat([decipher.update(enc), decipher.final()]).toString('utf8');
-};
+function oauthClient() {
+  const { clientId, clientSecret, redirectUri, configured } = sheetsConfig();
+  if (!configured) throw new SheetsError('SHEETS_NOT_CONFIGURED', 'Google Sheets sync is not set up on this server.', 503);
+  return new google.auth.OAuth2(clientId, clientSecret, redirectUri);
+}
 
-const getOAuthClient = () => {
-  const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_SHEETS_REDIRECT_URI } = process.env;
-  if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !GOOGLE_SHEETS_REDIRECT_URI) {
-    throw fail(
-      500,
-      'SHEETS_NOT_CONFIGURED',
-      'Google Sheets sync is not configured (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_SHEETS_REDIRECT_URI).'
-    );
-  }
-  return new google.auth.OAuth2(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_SHEETS_REDIRECT_URI);
-};
-
-// Step 1 of connecting: the URL the user must visit to grant Sheets access.
-const getAuthUrl = (userId) => {
-  const client = getOAuthClient();
-  const state = jwt.sign(
-    { userId, purpose: 'sheets-connect' },
-    derive('sheets-state').toString('hex'),
-    { expiresIn: '10m' }
-  );
-  return client.generateAuthUrl({
-    access_type: 'offline', // we need a refresh token for later syncs
-    prompt: 'consent', // forces Google to return that refresh token
-    scope: [SHEETS_SCOPE],
-    include_granted_scopes: true,
-    state,
+function buildAuthUrl(userId) {
+  if (!process.env.JWT_SECRET) throw new SheetsError('SHEETS_NOT_CONFIGURED', 'Google Sheets sync is not set up on this server.', 503);
+  const state = jwt.sign({ userId, purpose: 'sheets' }, process.env.JWT_SECRET, { expiresIn: '10m' });
+  return oauthClient().generateAuthUrl({
+    access_type: 'offline', prompt: 'consent', scope: [SHEETS_SCOPE],
+    include_granted_scopes: true, state,
   });
-};
+}
 
-// Step 2: Google redirects back with ?code=&state=. The signed state tells
-// us which user this is, since the browser redirect carries no login token.
-const handleCallback = async (code, state) => {
-  const invalidState = () =>
-    fail(400, 'INVALID_STATE', 'The Google sign-in session is invalid or expired. Start the connection again.');
-
+async function handleCallback(code, state) {
   let payload;
-  try {
-    payload = jwt.verify(state, derive('sheets-state').toString('hex'));
-  } catch (err) {
-    throw invalidState();
+  try { payload = jwt.verify(String(state), process.env.JWT_SECRET); }
+  catch { throw new SheetsError('SHEETS_STATE_INVALID', 'This connection link expired. Please try again.'); }
+  if (!payload || payload.purpose !== 'sheets' || !payload.userId) {
+    throw new SheetsError('SHEETS_STATE_INVALID', 'This connection link is not valid.');
   }
-  if (!payload || payload.purpose !== 'sheets-connect' || !payload.userId) throw invalidState();
 
-  const client = getOAuthClient();
   let tokens;
-  try {
-    ({ tokens } = await client.getToken(code));
-  } catch (err) {
-    throw fail(400, 'GOOGLE_EXCHANGE_FAILED', 'Google rejected the authorization code.');
+  try { ({ tokens } = await oauthClient().getToken(String(code))); }
+  catch { throw new SheetsError('SHEETS_TOKEN_FAILED', 'Google did not accept the sign-in. Please try again.'); }
+  const existing = await GoogleSheetsAuth.findOne({ userId: payload.userId });
+  if (!tokens.refresh_token && !existing) {
+    throw new SheetsError('SHEETS_TOKEN_FAILED', 'Google did not grant offline access. Remove Milestone from your Google account permissions and try again.');
   }
-  if (!tokens || !tokens.refresh_token) {
-    throw fail(
-      400,
-      'NO_REFRESH_TOKEN',
-      'Google did not return a refresh token. Remove this app from your Google account permissions and connect again.'
-    );
+  if (tokens.refresh_token) {
+    await GoogleSheetsAuth.findOneAndUpdate({ userId: payload.userId }, { $set: {
+      refreshTokenEnc: encrypt(tokens.refresh_token), scope: tokens.scope || SHEETS_SCOPE, connectedAt: new Date(),
+    } }, { upsert: true });
   }
-
-  await GoogleSheetsAuth.updateOne(
-    { userId: payload.userId },
-    { $set: { refreshTokenEnc: encryptToken(tokens.refresh_token), scope: tokens.scope || SHEETS_SCOPE } },
-    { upsert: true }
-  );
   return payload.userId;
-};
+}
 
-const isConnected = async (userId) => !!(await GoogleSheetsAuth.exists({ userId }));
+async function isConnected(userId) { return Boolean(await GoogleSheetsAuth.exists({ userId })); }
 
-const getAuthorizedClient = async (userId) => {
-  const notConnected = () =>
-    fail(400, 'SHEETS_NOT_CONNECTED', 'Google Sheets is not connected yet. Connect it first, then sync.');
-
+async function authorizedClient(userId) {
   const record = await GoogleSheetsAuth.findOne({ userId });
-  if (!record) throw notConnected();
-
+  if (!record) throw new SheetsError('SHEETS_NOT_CONNECTED', 'Connect Google Sheets first.');
   let refreshToken;
-  try {
-    refreshToken = decryptToken(record.refreshTokenEnc);
-  } catch (err) {
-    // Unreadable token (for example JWT_SECRET changed): ask the user to reconnect.
+  try { refreshToken = decrypt(record.refreshTokenEnc); }
+  catch {
     await GoogleSheetsAuth.deleteOne({ userId });
-    throw notConnected();
+    throw new SheetsError('SHEETS_NOT_CONNECTED', 'Connect Google Sheets first.');
   }
-
-  const client = getOAuthClient();
+  const client = oauthClient();
   client.setCredentials({ refresh_token: refreshToken });
   return client;
-};
+}
 
-const httpStatus = (err) => err.code || err.status || (err.response && err.response.status);
-const isNotFound = (err) => httpStatus(err) === 404;
-const isAuthError = (err) =>
-  httpStatus(err) === 401 ||
-  /invalid_grant/.test(String(err.message)) ||
-  (err.response && err.response.data && err.response.data.error === 'invalid_grant');
+async function createSheet(api, userId) {
+  const result = await api.spreadsheets.create({ requestBody: {
+    properties: { title: 'Milestone — Internship Applications' },
+    sheets: [{ properties: { title: TAB } }],
+  } });
+  return SheetMapping.create({ userId, sheetId: result.data.spreadsheetId, sheetUrl: result.data.spreadsheetUrl });
+}
 
-const getOrCreateSheet = async (userId, api) => {
-  const existing = await SheetMapping.findOne({ userId });
-  if (existing) return existing;
-
-  const created = await api.spreadsheets.create({
-    requestBody: {
-      properties: { title: 'Internship Applications' },
-      sheets: [{ properties: { title: TAB } }],
-    },
-  });
-  return SheetMapping.create({
-    userId,
-    sheetId: created.data.spreadsheetId,
-    sheetUrl: created.data.spreadsheetUrl,
-  });
-};
-
-const toRows = (applications) =>
-  applications.map((app) => [
-    app.company,
-    app.role,
-    app.status,
+function rowsFor(applications) {
+  return applications.map((app) => [
+    app.company, app.role, app.status,
     app.appliedDate ? new Date(app.appliedDate).toISOString().split('T')[0] : '',
-    app.lastUpdated ? new Date(app.lastUpdated).toISOString().split('T')[0] : '',
-    app.notes || '',
+    app.lastUpdated ? new Date(app.lastUpdated).toISOString().split('T')[0] : '', app.notes || '',
   ]);
+}
 
-// Clear first so applications deleted in the tracker disappear from the
-// sheet. valueInputOption RAW stores text as-is, so a note starting with "="
-// is never run as a formula.
-const writeRows = async (api, spreadsheetId, applications) => {
-  await api.spreadsheets.values.clear({ spreadsheetId, range: TAB });
-  await api.spreadsheets.values.update({
-    spreadsheetId,
-    range: `${TAB}!A1`,
-    valueInputOption: 'RAW',
-    requestBody: { values: [HEADERS, ...toRows(applications)] },
-  });
-};
+async function writeRows(api, sheetId, applications) {
+  await api.spreadsheets.values.clear({ spreadsheetId: sheetId, range: TAB });
+  await api.spreadsheets.values.update({ spreadsheetId: sheetId, range: `${TAB}!A1`,
+    valueInputOption: 'RAW', requestBody: { values: [HEADERS, ...rowsFor(applications)] } });
+}
 
-const syncApplications = async (userId, applications) => {
-  const auth = await getAuthorizedClient(userId);
-  const api = google.sheets({ version: 'v4', auth });
-
+async function writeApplicationsToSheet(userId, applications) {
   try {
-    let mapping = await getOrCreateSheet(userId, api);
-    try {
-      await writeRows(api, mapping.sheetId, applications);
-    } catch (err) {
-      if (!isNotFound(err)) throw err;
-      // The user deleted the sheet in Google Drive: start a fresh one.
+    const auth = await authorizedClient(userId);
+    const api = google.sheets({ version: 'v4', auth });
+    let mapping = await SheetMapping.findOne({ userId });
+    if (!mapping) mapping = await createSheet(api, userId);
+    try { await writeRows(api, mapping.sheetId, applications); }
+    catch (err) {
+      if (Number(err?.code || err?.response?.status) !== 404) throw err;
       await SheetMapping.deleteOne({ userId });
-      mapping = await getOrCreateSheet(userId, api);
+      mapping = await createSheet(api, userId);
       await writeRows(api, mapping.sheetId, applications);
     }
     return mapping.sheetUrl;
   } catch (err) {
-    if (isAuthError(err)) {
+    const message = String(err?.response?.data?.error || err?.message || '');
+    if (/invalid_grant|invalid_token|unauthorized_client/i.test(message) || Number(err?.code) === 401) {
       await GoogleSheetsAuth.deleteOne({ userId });
-      throw fail(401, 'SHEETS_AUTH_EXPIRED', 'Google access expired or was revoked. Connect Google Sheets again.');
+      throw new SheetsError('SHEETS_AUTH_EXPIRED', 'Google access ended. Please connect again.', 401);
     }
+    if (Number(err?.code) === 403 && /disabled|accessNotConfigured|has not been used/i.test(message)) {
+      throw new SheetsError('SHEETS_NOT_CONFIGURED', 'Google Sheets sync is not available right now.', 503);
+    }
+    if (err instanceof SheetsError) throw err;
     throw err;
   }
-};
+}
 
-module.exports = {
-  SHEETS_SCOPE,
-  getAuthUrl,
-  handleCallback,
-  isConnected,
-  syncApplications,
-  encryptToken,
-  decryptToken,
-};
+module.exports = { SHEETS_SCOPE, SheetsError, isConfigured, buildAuthUrl, handleCallback,
+  isConnected, writeApplicationsToSheet };

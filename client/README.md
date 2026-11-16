@@ -1,0 +1,1 @@
+# Milestone frontend (starter)\n\nRun `npm install` then `npm run dev` in this folder. Configure `VITE_API_URL` (defaults to `http://localhost:5000/api/v1`). Login token is read from `milestone_token` in localStorage. This is the visual shell/dashboard; module pages are next to wire each feature's complete interactions.\n 

@@ -1,61 +1,45 @@
 // server/src/middleware/auth.middleware.js
 //
-// Two exports:
-//
-//   requireAuth         — standard JWT guard for user-facing protected routes.
-//                         Sets req.user = { userId, email } on success.
-//
-//   authenticate(opts)  — factory that produces a middleware. When called with
-//                         { allowInternal: true } it also accepts an internal
-//                         service-to-service call identified by:
-//                           x-internal-key: <INTERNAL_API_KEY>
-//                           x-user-id:      <userId on whose behalf>
-//                         Sets req.isInternal = true in that case.
-//                         Used for PATCH /skills/verify and POST /certificates/badge.
-//
-// Error codes (per CONTRACTS.md §3):
-//   NO_TOKEN       — Authorization header missing or not "Bearer ..."
-//   SESSION_EXPIRED — jwt.TokenExpiredError
-//   INVALID_TOKEN  — anything else (bad signature, malformed, etc.)
+// requireAuth      – a logged-in user (Bearer JWT)
+// requireInternal  – ONLY other parts of this server (x-internal-key). A user's
+//                    own token is NOT accepted. Used for skill verification and
+//                    badge creation, which must only follow a passed quiz.
+// authenticate()   – factory kept for backwards compatibility.
 
+const jwt = require('jsonwebtoken');
 const { verifyToken } = require('../utils/token');
-const { fail }        = require('../utils/respond');
-const jwt             = require('jsonwebtoken');
+const { fail } = require('../utils/respond');
+const { safeEqual } = require('../utils/crypto');
 
-/**
- * Middleware factory.
- * @param {{ allowInternal?: boolean }} opts
- */
+function hasValidInternalKey(req) {
+  const expected = process.env.INTERNAL_API_KEY;
+  if (!expected) return false; // never allow an empty key to match
+  return safeEqual(req.headers['x-internal-key'], expected);
+}
+
 function authenticate({ allowInternal = false } = {}) {
   return function authMiddleware(req, res, next) {
-    // ── Internal service-to-service path ──────────────────────────────────
-    if (allowInternal) {
-      const internalKey = req.headers['x-internal-key'];
-      const userId      = req.headers['x-user-id'];
-
-      if (internalKey && internalKey === process.env.INTERNAL_API_KEY && userId) {
-        req.user       = { userId, email: null };
+    if (allowInternal && req.headers['x-internal-key']) {
+      const userId = req.headers['x-user-id'];
+      if (hasValidInternalKey(req) && userId) {
+        req.user = { userId: String(userId), email: null };
         req.isInternal = true;
         return next();
       }
-      // If the caller sent x-internal-key but it's wrong, reject immediately
-      // rather than falling through to JWT (avoids ambiguous error messages).
-      if (internalKey && internalKey !== process.env.INTERNAL_API_KEY) {
-        return fail(res, 401, 'INVALID_TOKEN', 'Invalid internal API key.');
-      }
+      return fail(res, 401, 'INVALID_TOKEN', 'Invalid internal API key.');
     }
 
-    // ── Standard JWT path ─────────────────────────────────────────────────
     const authHeader = req.headers['authorization'] || '';
     if (!authHeader.startsWith('Bearer ')) {
       return fail(res, 401, 'NO_TOKEN', 'No authentication token provided.');
     }
 
-    const token = authHeader.slice(7); // strip "Bearer "
-
     try {
-      const decoded  = verifyToken(token);
-      req.user       = { userId: decoded.userId, email: decoded.email };
+      const decoded = verifyToken(authHeader.slice(7));
+      if (!decoded || typeof decoded.userId !== 'string' || !decoded.userId) {
+        return fail(res, 401, 'INVALID_TOKEN', 'Invalid or malformed token.');
+      }
+      req.user = { userId: decoded.userId, email: decoded.email };
       req.isInternal = false;
       return next();
     } catch (err) {
@@ -67,7 +51,14 @@ function authenticate({ allowInternal = false } = {}) {
   };
 }
 
-// Pre-built instance for the common case (no internal calls allowed).
+function requireInternal(req, res, next) {
+  if (!hasValidInternalKey(req)) {
+    return fail(res, 401, 'INVALID_TOKEN', 'This endpoint is for internal use only.');
+  }
+  req.isInternal = true;
+  return next();
+}
+
 const requireAuth = authenticate({ allowInternal: false });
 
-module.exports = { requireAuth, authenticate };
+module.exports = { requireAuth, requireInternal, authenticate };

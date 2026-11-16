@@ -15,7 +15,6 @@
 const mongoose = require('mongoose');
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 const userSchema = new mongoose.Schema(
   {
     _id:          { type: String, required: true },

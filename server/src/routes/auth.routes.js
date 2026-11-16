@@ -3,6 +3,7 @@
 const express = require('express');
 const router  = express.Router();
 const cookieParser = require('cookie-parser');
+const { authLimiter } = require('../middleware/security.middleware');
 
 const {
   signup,
@@ -14,8 +15,8 @@ const {
 // cookie-parser needed for the Google OAuth state cookie
 router.use(cookieParser());
 
-router.post('/signup',           signup);
-router.post('/login',            login);
+router.post('/signup',           authLimiter, signup);
+router.post('/login',            authLimiter, login);
 router.get('/google',            googleStart);
 router.get('/google/callback',   googleCallback);
 
